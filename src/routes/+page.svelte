@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import { getGroupStageMatches, getKnockoutStageMatches, update } from '$lib/DataHub';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
@@ -13,10 +14,25 @@
 
 		data = data;
 	}
+
+	async function onLogout() {
+		const response = await fetch('/api/logout', {
+			method: 'POST'
+		});
+
+		if (response.ok) {
+			await invalidateAll();
+		}
+	}
 </script>
 
 <Navbar addHomeLink={false}>
 	<li><a href="/update" on:click|preventDefault={localUpdate}>Aktualisieren</a></li>
+	{#if data.isAuthentificated}
+		<li><a href="/logout" on:click|preventDefault={onLogout}>Logout</a></li>
+	{:else}
+		<li><a href="/login">Anmelden</a></li>
+	{/if}
 </Navbar>
 
 <main>

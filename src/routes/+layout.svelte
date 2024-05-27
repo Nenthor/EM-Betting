@@ -10,7 +10,7 @@
 	:root {
 		--success: #32cd32;
 		--error: #cd3232;
-		--primary: #09aab0;
+		--primary: #0adee6;
 	}
 
 	* {

@@ -16,6 +16,13 @@ export interface Bet {
 	matchId: number;
 }
 
+export const defaultUser: User = {
+	username: '',
+	password: '',
+	photoURL: '',
+	bets: []
+};
+
 // User functions
 export async function getAllUsers(): Promise<User[]> {
 	const data = await Promise.all([getAll('users') as Promise<User[]>, getAll('bets') as Promise<Bet[]>]);
@@ -47,28 +54,38 @@ export async function getQueryUsers(field: keyof User, operator: WhereFilterOp, 
 }
 
 export async function getUser(username: string): Promise<User | undefined> {
-	const data = await Promise.all([get('users', username) as Promise<User>, getQueryBets('createdBy', '==', username)]);
+	const data = await Promise.all([get('users', username.toLowerCase()) as Promise<User>, getQueryBets('createdBy', '==', username)]);
 	if (!data[0]) return undefined;
 
 	data[0].bets = data[1];
 	return data[0];
 }
 
+/**
+ * Updates or creates a user in the database
+ * @param user User to be updated - bets will be ignored
+ * @returns Promise<boolean> If the user was created successfully
+ */
 export async function setUser(user: User) {
 	const dbUser: any = { ...user };
 	delete dbUser.bets;
 
-	return await set('users', dbUser.username, dbUser);
+	return await set('users', dbUser.username.toLowerCase(), dbUser);
 }
 
+/**
+ * Creates a new user in the database
+ * @param user User to be created - bets will be ignored
+ * @returns Promise<boolean> If the user was created successfully
+ */
 export async function createUser(user: User) {
 	const dbUser: any = { ...user };
 	delete dbUser.bets;
-	return await create('users', dbUser.username, dbUser);
+	return await create('users', dbUser.username.toLowerCase(), dbUser);
 }
 
 export async function removeUser(username: string) {
-	return await remove('users', username);
+	return await remove('users', username.toLowerCase());
 }
 
 // Bet functions
