@@ -118,7 +118,7 @@ export async function fetchMatchData(groupOrderID: number | undefined = undefine
 }
 
 export async function fetchCurrentGroup(): Promise<Stage> {
-	return await fetchData('https://api.openligadb.de/getcurrentgroup/em');
+	return await fetchData(`https://api.openligadb.de/getcurrentgroup/${LEAGE_SHORTCUT}`);
 }
 
 export async function fetchAvailableGroups(): Promise<Stage[]> {

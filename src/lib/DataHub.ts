@@ -1,5 +1,6 @@
 import type { Match, Stage } from './OpenLiga';
 import { fetchAvailableGroups, fetchCurrentGroup, fetchMatchData } from './OpenLiga';
+import type { User } from './server/Database';
 
 export const CACHE_TIME = 30_000; // in seconds
 
@@ -12,6 +13,13 @@ let matchesInKnockout: { stageName: string; matches: Match[] }[] = [];
 
 let lastRefresh = Date.now();
 let refreshDone = firstLoad();
+
+export const defaultUser: User = {
+	username: '',
+	password: '',
+	photoURL: '',
+	bets: []
+};
 
 export async function update() {
 	if (Date.now() - lastRefresh > CACHE_TIME) {

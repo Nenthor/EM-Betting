@@ -1,6 +1,5 @@
-import { update } from '$lib/DataHub';
+import { defaultUser, update } from '$lib/DataHub';
 import { getUserFromCookies } from '$lib/server/Auth';
-import { defaultUser } from '$lib/server/Database';
 import { redirect, type Handle } from '@sveltejs/kit';
 
 const onlyNonAuthRouts = ['/login', '/api/login', '/register', '/api/register'];

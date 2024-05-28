@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
-	import { getMatch, update } from '$lib/DataHub';
+	import { defaultUser, getMatch, update } from '$lib/DataHub';
 	import BetStats from '$lib/components/BetStats.svelte';
 	import ChangeBet from '$lib/components/ChangeBet.svelte';
 	import MatchItem from '$lib/components/MatchItem.svelte';
@@ -133,7 +133,7 @@
 	<div class="standingBox">
 		<div class="standing">
 			<h2>{getMatchStatus()}</h2>
-			<MatchItem match={data.match} />
+			<MatchItem match={data.match} user={defaultUser} />
 		</div>
 	</div>
 	<div class="bet">

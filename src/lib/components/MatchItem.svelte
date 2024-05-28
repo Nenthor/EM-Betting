@@ -1,7 +1,14 @@
 <script lang="ts">
 	import type { Match, Team } from '$lib/OpenLiga';
+	import type { User } from '$lib/server/Database';
 
 	export let match: Match;
+	export let user: User;
+
+	function hasBetForTeam(team: Team) {
+		const bet = user.bets.find((bet) => bet.matchId === match.matchID);
+		return bet && bet.teamId === team.teamId;
+	}
 
 	function getDateFormatted(date: string) {
 		const dateObj = new Date(date);
@@ -73,9 +80,19 @@
 	<div>
 		<div class="matchBox">
 			<img class={getMatchStatus(match.team1)} src={match.team1.teamIconUrl} alt="Flagge von {match.team1.shortName}" />
-			<p class="matchTeams">{getTeamName(match.team1)}</p>
+			<p class="matchTeams">
+				{#if hasBetForTeam(match.team1)}
+					<img src="/images/svg/star.svg" alt="selected" />
+				{/if}
+				{getTeamName(match.team1)}
+			</p>
 			<p class="matchResult">{getMatchResult()}</p>
-			<p class="matchTeams">{getTeamName(match.team2)}</p>
+			<p class="matchTeams">
+				{getTeamName(match.team2)}
+				{#if hasBetForTeam(match.team2)}
+					<img src="/images/svg/star.svg" alt="selected" />
+				{/if}
+			</p>
 			<img class={getMatchStatus(match.team2)} src={match.team2.teamIconUrl} alt="Flagge von {match.team2.shortName}" />
 		</div>
 		<div class="matchBox">
@@ -189,6 +206,10 @@
 		font-weight: bold;
 		flex-grow: 1;
 		flex-basis: 100px;
+	}
+
+	.matchTeams > img {
+		width: 20px;
 	}
 
 	.matchResult {

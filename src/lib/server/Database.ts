@@ -15,13 +15,6 @@ export interface Bet {
 	teamId: number;
 }
 
-export const defaultUser: User = {
-	username: '',
-	password: '',
-	photoURL: '',
-	bets: []
-};
-
 // User functions
 export async function getAllUsers(): Promise<User[]> {
 	const data = await Promise.all([getAll('users') as Promise<User[]>, getAll('bets') as Promise<Bet[]>]);
