@@ -80,7 +80,7 @@
 		<p>Gebe dein Benutzername und Passwort ein um weiter wetten zu können.</p>
 	{:else}
 		<h1>Registrieren</h1>
-		<p>Wähle dein Benutzername und Passwort ein auf Fußball Spiele zu wetten.</p>
+		<p>Wähle dein Benutzername und Passwort ein auf Fußball Spiele zu wetten. Bitte verwende nur einen Account.</p>
 	{/if}
 
 	<div>

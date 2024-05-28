@@ -76,11 +76,11 @@
 
 	::-webkit-scrollbar-thumb {
 		border-radius: 10px;
-		background-image: linear-gradient(#ddd, #fff);
+		background-image: linear-gradient(var(--primary), var(--primary-light));
 	}
 
 	::-webkit-scrollbar-thumb:hover {
-		background-image: linear-gradient(#ddd, #ddd);
+		background-image: linear-gradient(var(--primary-dark), var(--primary));
 	}
 
 	input {

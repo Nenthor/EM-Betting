@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import { getMatch, update } from '$lib/DataHub';
+	import BetStats from '$lib/components/BetStats.svelte';
 	import ChangeBet from '$lib/components/ChangeBet.svelte';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
@@ -15,6 +17,8 @@
 			data.match = updatedMatch;
 			data = data;
 		}
+		await invalidateAll();
+		data = data;
 	}
 
 	function getMatchStatus() {
@@ -54,6 +58,71 @@
 		}
 		return status;
 	}
+
+	function getWinnerString() {
+		const winner = getWinner();
+		if (winner) {
+			return `${winner.teamName} hat gewonnen!`;
+		} else return 'Kein Gewinner';
+	}
+
+	function getWinner() {
+		if (!data.match.matchIsFinished) return undefined;
+
+		const latestResult = data.match.matchResults.find((result) => result.resultName.includes('Endergebnis'));
+		if (!latestResult) return undefined;
+
+		if (latestResult.pointsTeam1 > latestResult.pointsTeam2) {
+			return data.match.team1;
+		} else if (latestResult.pointsTeam1 < latestResult.pointsTeam2) {
+			return data.match.team2;
+		} else {
+			return undefined;
+		}
+	}
+
+	function getCurrentWinner() {
+		const latestResult = data.match.matchResults
+			.filter((result) => result !== undefined)
+			.sort((a, b) => a.resultOrderID - b.resultOrderID)
+			.pop();
+		if (!latestResult) return undefined;
+
+		if (latestResult.pointsTeam1 > latestResult.pointsTeam2) {
+			return data.match.team1;
+		} else if (latestResult.pointsTeam1 < latestResult.pointsTeam2) {
+			return data.match.team2;
+		} else {
+			return undefined;
+		}
+	}
+
+	function getCurrentWinnerString() {
+		const winner = getCurrentWinner();
+		if (winner) {
+			return `${winner.teamName} führt!`;
+		} else return 'Noch kein Gewinner';
+	}
+
+	function getBet() {
+		return data.user.bets.find((bet) => bet.matchId === data.match.matchID);
+	}
+
+	function hasWonBet() {
+		const winner = getWinner();
+		const bet = getBet();
+		if (!winner || !bet) return false;
+
+		return winner.teamId === bet.teamId;
+	}
+
+	function isWinningBet() {
+		const winner = getCurrentWinner();
+		const bet = getBet();
+		if (!winner || !bet) return false;
+
+		return winner.teamId === bet.teamId;
+	}
 </script>
 
 <Navbar>
@@ -74,9 +143,23 @@
 				<a href="/login?from={data.match.matchID}">Melde dich jetzt an</a>
 			</div>
 		{:else if data.match.matchIsFinished}
-			<p>Match is finished</p>
+			<div class="betInfo">
+				<p>Spiel beendet. {getWinnerString()}</p>
+				{#if getBet()}
+					<p>Damit hast du <span class={hasWonBet() ? 'success' : 'failure'}>{hasWonBet() ? 'richtig' : 'falsch'}</span> gewettet!</p>
+				{:else}
+					<p><i>Keine Wette abgegeben.</i></p>
+				{/if}
+			</div>
 		{:else if new Date(data.match.matchDateTime).getTime() < Date.now()}
-			<p>Match has already started</p>
+			<div class="betInfo">
+				<p>Spiel läuft noch. {getCurrentWinnerString()}</p>
+				{#if getBet()}
+					<p>Damit hast du momentan <span class={isWinningBet() ? 'success' : 'failure'}>{isWinningBet() ? 'richtig' : 'falsch'}</span> gewettet!</p>
+				{:else}
+					<p><i>Keine Wette abgegeben.</i></p>
+				{/if}
+			</div>
 		{:else if data.match.team1.teamName.includes('TBD') || data.match.team2.teamName.includes('TBD')}
 			<div class="betInfo">
 				<p>Wetten sind erst möglich, wenn beide Teams feststehen.</p>
@@ -86,6 +169,12 @@
 			<ChangeBet {data} />
 		{:else}
 			<NewBet {data} />
+		{/if}
+
+		{#if data.matchBets.length > 0}
+			<div class="stats">
+				<BetStats {data} />
+			</div>
 		{/if}
 	</div>
 </main>
@@ -119,12 +208,8 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-	}
-
-	.bet > p {
-		margin-top: 20px;
-		max-width: 500px;
-		text-align: center;
+		flex-direction: column;
+		gap: 50px;
 	}
 
 	.betInfo {
@@ -156,5 +241,15 @@
 	.betInfo > a:hover {
 		color: white;
 		background-color: var(--success);
+	}
+
+	p > .success {
+		color: var(--success);
+		font-weight: bold;
+	}
+
+	p > .failure {
+		color: var(--error);
+		font-weight: bold;
 	}
 </style>

@@ -82,7 +82,7 @@
 		justify-content: center;
 		align-items: center;
 		padding: 10px 20px;
-		margin: 50px 20px;
+		margin: 50px 20px 0 20px;
 		gap: 10px;
 		background-color: #646464;
 		border-radius: 20px;
