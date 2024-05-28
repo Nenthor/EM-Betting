@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { getMatch, update } from '$lib/DataHub';
+	import ChangeBet from '$lib/components/ChangeBet.svelte';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import NewBet from '$lib/components/NewBet.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -65,6 +67,27 @@
 			<MatchItem match={data.match} />
 		</div>
 	</div>
+	<div class="bet">
+		{#if !data.isAuthenticated}
+			<div class="betInfo">
+				<p>Du musst angemeldet sein, um eine Wette abzugeben</p>
+				<a href="/login?from={data.match.matchID}">Melde dich jetzt an</a>
+			</div>
+		{:else if data.match.matchIsFinished}
+			<p>Match is finished</p>
+		{:else if new Date(data.match.matchDateTime).getTime() < Date.now()}
+			<p>Match has already started</p>
+		{:else if data.match.team1.teamName.includes('TBD') || data.match.team2.teamName.includes('TBD')}
+			<div class="betInfo">
+				<p>Wetten sind erst möglich, wenn beide Teams feststehen.</p>
+				<a href="/">Zurück</a>
+			</div>
+		{:else if data.user.bets.find((bet) => bet.matchId === data.match.matchID)}
+			<ChangeBet {data} />
+		{:else}
+			<NewBet {data} />
+		{/if}
+	</div>
 </main>
 
 <style>
@@ -86,5 +109,52 @@
 		gap: 10px;
 		background-color: #646464;
 		border-radius: 0 0 50px 50px;
+	}
+
+	.standing > h2 {
+		text-align: center;
+	}
+
+	.bet {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.bet > p {
+		margin-top: 20px;
+		max-width: 500px;
+		text-align: center;
+	}
+
+	.betInfo {
+		margin-top: 50px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 10px;
+		padding: 10px;
+	}
+
+	.betInfo > a {
+		width: max-content;
+		padding-left: 50px;
+		padding-right: 50px;
+		color: var(--success);
+		background-color: white;
+		transition: all 0.33s;
+		text-decoration: none;
+		font-size: larger;
+		font-weight: bold;
+		padding: 10px 30px;
+		border-radius: 50px;
+		min-width: 150px;
+		text-align: center;
+	}
+
+	.betInfo > a:hover {
+		color: white;
+		background-color: var(--success);
 	}
 </style>

@@ -1,3 +1,6 @@
+const LEAGE_SHORTCUT = 'em';
+const SEASON = 2024;
+
 export interface GroupMatch {
 	[key: number]: Match[];
 }
@@ -108,12 +111,8 @@ async function fetchData(url: string) {
 	return await response.json();
 }
 
-export async function fetchMatchDataById(matchId: number): Promise<Match> {
-	return await fetchData(`https://api.openligadb.de/getmatchdata/${matchId}`);
-}
-
-export async function fetchMatchData(leagueShortcut: string, leagueSeason: number, groupOrderID: number | undefined = undefined): Promise<Match[]> {
-	let url = `https://api.openligadb.de/getmatchdata/${leagueShortcut}/${leagueSeason}`;
+export async function fetchMatchData(groupOrderID: number | undefined = undefined): Promise<Match[]> {
+	let url = `https://api.openligadb.de/getmatchdata/${LEAGE_SHORTCUT}/${SEASON}`;
 	if (groupOrderID !== undefined) url += `/${groupOrderID}`;
 	return await fetchData(url);
 }
@@ -122,18 +121,6 @@ export async function fetchCurrentGroup(): Promise<Stage> {
 	return await fetchData('https://api.openligadb.de/getcurrentgroup/em');
 }
 
-export async function fetchAvailableGroups(leagueShortcut: string, leagueSaison: number): Promise<Stage[]> {
-	return await fetchData(`https://api.openligadb.de/getavailablegroups/${leagueShortcut}/${leagueSaison}`);
-}
-
-export async function fetchGoalGetters(leagueShortcut: string, leagueSeason: number): Promise<GoalGetter[]> {
-	return await fetchData(`https://api.openligadb.de/getgoalgetters/${leagueShortcut}/${leagueSeason}`);
-}
-
-export async function fetchAvailableTeams(leagueShortcut: string, leagueSaison: number): Promise<Team[]> {
-	return await fetchData(`https://api.openligadb.de/getavailableteams/${leagueShortcut}/${leagueSaison}`);
-}
-
-export async function fetchTable(leagueShortcut: string, leagueSeason: number): Promise<TableTeam[]> {
-	return await fetchData(`https://api.openligadb.de/getbltable/${leagueShortcut}/${leagueSeason}`);
+export async function fetchAvailableGroups(): Promise<Stage[]> {
+	return await fetchData(`https://api.openligadb.de/getavailablegroups/${LEAGE_SHORTCUT}/${SEASON}`);
 }

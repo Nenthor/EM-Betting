@@ -14,7 +14,11 @@
 	let form: HTMLFormElement;
 	let animation: NodeJS.Timeout;
 
+	let fromParam: String | null = null;
 	onMount(async () => {
+		const serachParams = new URLSearchParams(location.search);
+		fromParam = serachParams.get('from');
+
 		autoFocusElement.focus();
 		animation = startCircleAnimation();
 		await invalidateAll();
@@ -50,8 +54,8 @@
 
 		if (type === 'success') {
 			// Redirect to the home page. Full reload to remove recaptcha script
-			if (history.state && history.state.from) {
-				goto(history.state.from);
+			if (fromParam) {
+				goto(`/match/${fromParam}`);
 			} else {
 				goto('/');
 			}
@@ -94,9 +98,9 @@
 	<button type="submit" {disabled}>{authType == 'login' ? 'Anmelden' : 'Registrieren'}</button>
 
 	{#if authType === 'login'}
-		<p>Noch kein Account? <a href="/register">Registrieren</a></p>
+		<p>Noch kein Account? <a href="/register{fromParam ? `?from=${fromParam}` : ''}">Registrieren</a></p>
 	{:else}
-		<p>Schon ein Account? <a href="/login">Anmelden</a></p>
+		<p>Schon ein Account? <a href="/login{fromParam ? `?from=${fromParam}` : ''}">Anmelden</a></p>
 	{/if}
 </form>
 

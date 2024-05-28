@@ -1,8 +1,6 @@
-import type { GoalGetter, Match, Stage } from './OpenLiga';
-import { fetchAvailableGroups, fetchCurrentGroup, fetchGoalGetters, fetchMatchData } from './OpenLiga';
+import type { Match, Stage } from './OpenLiga';
+import { fetchAvailableGroups, fetchCurrentGroup, fetchMatchData } from './OpenLiga';
 
-const LEAGE_SHORTCUT = 'dfb';
-const SEASON = 2023;
 export const CACHE_TIME = 30_000; // in seconds
 
 let stages: Stage[] = [];
@@ -11,7 +9,6 @@ let allMatches: Match[] = [];
 let allMatchesIndices = new Map<number, number>(); // k: matchId; v: index in allMatches
 let matchesInGroup: { groupName: string; matches: Match[] }[] = [];
 let matchesInKnockout: { stageName: string; matches: Match[] }[] = [];
-let topScorer: GoalGetter[] = [];
 
 let lastRefresh = Date.now();
 let refreshDone = firstLoad();
@@ -26,7 +23,7 @@ export async function update() {
 }
 
 async function refreshData() {
-	const newMatchData = await fetchMatchData(LEAGE_SHORTCUT, SEASON, currentStage!.groupOrderID);
+	const newMatchData = await fetchMatchData(currentStage!.groupOrderID);
 
 	for (const newMatch of newMatchData) {
 		const oldMatchIndex = allMatchesIndices.get(newMatch.matchID);
@@ -72,10 +69,9 @@ export function getCurrentStage() {
 
 async function firstLoad() {
 	const promises = [];
-	promises.push(fetchAvailableGroups(LEAGE_SHORTCUT, SEASON).then((data) => (stages = data)));
+	promises.push(fetchAvailableGroups().then((data) => (stages = data)));
 	promises.push(fetchCurrentGroup().then((data) => (currentStage = data)));
-	promises.push(fetchGoalGetters(LEAGE_SHORTCUT, SEASON).then((data) => (topScorer = data)));
-	promises.push(fetchMatchData(LEAGE_SHORTCUT, SEASON).then((data) => (allMatches = data)));
+	promises.push(fetchMatchData().then((data) => (allMatches = data)));
 	await Promise.all(promises);
 
 	for (let i = 0; i < allMatches.length; i++) {

@@ -10,7 +10,10 @@
 	:root {
 		--success: #32cd32;
 		--error: #cd3232;
-		--primary: #0adee6;
+		--error-dark: #b40000;
+		--primary: #3cd;
+		--primary-light: #28e6fc;
+		--primary-dark: #00a6b4;
 	}
 
 	* {

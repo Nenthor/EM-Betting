@@ -2,7 +2,7 @@ import { logoutUser } from '$lib/server/Auth';
 import { type RequestHandler } from '@sveltejs/kit';
 
 export const POST = (async ({ cookies, locals }) => {
-	if (!locals.isAuthentificated) {
+	if (!locals.isAuthenticated) {
 		return getResponse('error', 'Sie sind nicht angemeldet.');
 	}
 

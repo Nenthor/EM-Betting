@@ -11,9 +11,8 @@ export interface User {
 export interface Bet {
 	id: string;
 	createdBy: string;
-	bet_amount: number;
-	multiplier: number;
 	matchId: number;
+	teamId: number;
 }
 
 export const defaultUser: User = {
@@ -114,7 +113,8 @@ export async function addBet(bet: Bet) {
 	if (betId) {
 		const dbBet: Bet = { ...bet };
 		dbBet.id = betId;
-		return await setBet(dbBet);
+		const success = await setBet(dbBet);
+		if (success) return dbBet;
 	}
 	return undefined;
 }

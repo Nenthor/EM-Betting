@@ -6,5 +6,5 @@ export const load = (async ({ locals }) => {
 	const groupStageMatches = getGroupStageMatches();
 	const knockoutStageMatches = getKnockoutStageMatches();
 
-	return { groupStageMatches, knockoutStageMatches, isAuthentificated: locals.isAuthentificated, user: getClientUser(locals.user) };
+	return { groupStageMatches, knockoutStageMatches, isAuthenticated: locals.isAuthenticated, user: getClientUser(locals.user) };
 }) satisfies PageServerLoad;

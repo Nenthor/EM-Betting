@@ -28,7 +28,7 @@
 
 <Navbar addHomeLink={false}>
 	<li><a href="/update" on:click|preventDefault={localUpdate}>Aktualisieren</a></li>
-	{#if data.isAuthentificated}
+	{#if data.isAuthenticated}
 		<li><a href="/logout" on:click|preventDefault={onLogout}>Logout</a></li>
 	{:else}
 		<li><a href="/login">Anmelden</a></li>

@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { getUser, type User } from './Database';
 
 const SECRET = generateJWTSecret(JWT_SECRET); // We only have one password so we can use it as a secret
-const expiresIn = 60 * 60 * 24 * 7; // 7 days
+const expiresIn = 60 * 60 * 24 * 30; // 30 days
 const userCache = new Map<string, User>();
 const MAX_CACHE_SIZE = 50;
 
@@ -46,7 +46,11 @@ export function loginUser(user: User, password: string, cookies: Cookies) {
 
 export function logoutUser(user: User, cookies: Cookies) {
 	cookies.delete(cookieName, { path: '/' });
-	userCache.delete(user.username);
+	removeUserFromCache(user.username);
+}
+
+export function removeUserFromCache(username: string) {
+	userCache.delete(username);
 }
 
 function generateJWTSecret(secret: string) {
