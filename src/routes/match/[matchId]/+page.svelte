@@ -1,25 +1,20 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
-	import { defaultUser, getMatch, update } from '$lib/DataHub';
+	import { defaultUser } from '$lib/DataHub';
 	import BetStats from '$lib/components/BetStats.svelte';
 	import ChangeBet from '$lib/components/ChangeBet.svelte';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import NewBet from '$lib/components/NewBet.svelte';
+	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
-	async function localUpdate() {
-		await update();
-		const updatedMatch = getMatch(data.match.matchID);
-		if (updatedMatch) {
-			data.match = updatedMatch;
-			data = data;
-		}
-		await invalidateAll();
-		data = data;
-	}
+	let backLink = '/';
+
+	onMount(() => {
+		backLink = getBackLink();
+	});
 
 	function getMatchStatus() {
 		let status = '';
@@ -123,10 +118,16 @@
 
 		return winner.teamId === bet.teamId;
 	}
+
+	function getBackLink() {
+		const from = new URLSearchParams(location.search).get('from');
+		if (from) return `/${from}`;
+		return '/';
+	}
 </script>
 
-<Navbar>
-	<li><a href="/update" on:click|preventDefault={localUpdate}>Aktualisieren</a></li>
+<Navbar addHomeLink={false}>
+	<li><a href={backLink}>Zurück</a></li>
 </Navbar>
 
 <main>

@@ -16,8 +16,13 @@ export const handle: Handle = (async ({ event, resolve }) => {
 		redirect(301, '/login');
 	}
 	if (user && onlyNonAuthRouts.includes(event.url.pathname)) {
-		// User is authentificated and tries to access a non authentificated route
-		redirect(301, '/');
+		// User is authentificated and tries to access a non authenticated route
+		redirect(301, '/dashboard');
+	}
+
+	if (event.url.pathname === '/') {
+		if (user) redirect(301, '/dashboard');
+		else redirect(301, '/matches');
 	}
 
 	event.locals = {
