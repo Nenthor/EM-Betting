@@ -12,7 +12,6 @@
 	let total_width = 0,
 		image_width = 0,
 		list_width = 0;
-	let redirect = '/';
 	let isRoot = true;
 
 	onMount(() => {
@@ -50,9 +49,9 @@
 </script>
 
 <nav bind:offsetWidth={total_width}>
-	<div id="title" bind:offsetWidth={image_width}>
+	<a id="title" href="/" bind:offsetWidth={image_width}>
 		<img src="/images/icon/icon-navbar.webp" alt="icon" />
-	</div>
+	</a>
 	{#if isMobileMenu}
 		<button id="nav_toggle" aria-label="Open mobile menu" on:click={() => onClick()}>
 			<span class="nav_bar {isOpen ? 'nav_bar_open' : ''}" />

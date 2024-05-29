@@ -163,13 +163,14 @@
 		gap: 25px;
 		margin: 10px 25px 0 25px;
 		justify-content: space-around;
+		align-items: center;
 	}
 
 	.group {
-		background-color: #161616;
+		background-color: #161616dd;
 		border-radius: 20px;
-		padding: 10px 40px;
-		flex: 0 0 calc(35% - 100px);
+		padding: 10px clamp(5px, 2vw, 40px);
+		flex: 0 0 45%;
 	}
 
 	.stage {
@@ -249,5 +250,11 @@
 
 	.arrowTurnLeft {
 		transform: rotate(90deg);
+	}
+
+	@media (max-width: 1700px) {
+		.groups {
+			flex-direction: column;
+		}
 	}
 </style>

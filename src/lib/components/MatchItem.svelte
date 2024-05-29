@@ -79,21 +79,25 @@
 <div class="match {isRunning() ? 'running' : ''}">
 	<div>
 		<div class="matchBox">
-			<img class={getMatchStatus(match.team1)} src={match.team1.teamIconUrl} alt="Flagge von {match.team1.shortName}" />
-			<p class="matchTeams">
-				{#if hasBetForTeam(match.team1)}
-					<img src="/images/svg/star.svg" alt="selected" />
-				{/if}
-				{getTeamName(match.team1)}
-			</p>
+			<div class="team">
+				<img class="matchImage {getMatchStatus(match.team1)}" src={match.team1.teamIconUrl} alt="Flagge von {match.team1.shortName}" />
+				<p class="matchTeams">
+					{#if hasBetForTeam(match.team1)}
+						<img src="/images/svg/star.svg" alt="selected" />
+					{/if}
+					{getTeamName(match.team1)}
+				</p>
+			</div>
 			<p class="matchResult">{getMatchResult()}</p>
-			<p class="matchTeams">
-				{getTeamName(match.team2)}
-				{#if hasBetForTeam(match.team2)}
-					<img src="/images/svg/star.svg" alt="selected" />
-				{/if}
-			</p>
-			<img class={getMatchStatus(match.team2)} src={match.team2.teamIconUrl} alt="Flagge von {match.team2.shortName}" />
+			<div class="team">
+				<p class="matchTeams">
+					{getTeamName(match.team2)}
+					{#if hasBetForTeam(match.team2)}
+						<img src="/images/svg/star.svg" alt="selected" />
+					{/if}
+				</p>
+				<img class="matchImage {getMatchStatus(match.team2)}" src={match.team2.teamIconUrl} alt="Flagge von {match.team2.shortName}" />
+			</div>
 		</div>
 		<div class="matchBox">
 			<p class="matchInfo">
@@ -111,6 +115,7 @@
 		border-radius: 20px;
 		font-weight: normal;
 		font-size: 1rem;
+		width: 550px;
 	}
 
 	@keyframes rotate {
@@ -157,7 +162,6 @@
 		align-items: center;
 		justify-content: center;
 		gap: 5px;
-		width: 550px;
 		height: calc(100% - 20px);
 		border-radius: 20px;
 	}
@@ -167,45 +171,54 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
-		align-items: center;
 	}
 
 	.matchBox:first-child {
 		width: 100%;
 	}
 
-	.matchBox > img {
+	.matchImage {
 		width: 30px;
 		background-color: white;
 		padding: 3px;
 	}
 
-	.matchBox > img.winning {
+	.matchImage.winning {
 		border: 5px solid var(--success);
 		border-radius: 20%;
 	}
 
-	.matchBox > img.losing {
+	.matchImage.losing {
 		border: 5px solid var(--error);
 		border-radius: 20%;
 	}
 
-	.matchBox > img.draw {
+	.matchImage.draw {
 		border: 5px solid #ff9b00;
 		border-radius: 20%;
 	}
 
-	.matchBox > p {
+	.team > p {
 		color: black;
 		margin: 0 15px;
 		text-align: center;
 	}
 
 	.matchTeams {
+		display: flex;
+		justify-content: center;
 		font-size: large;
 		font-weight: bold;
 		flex-grow: 1;
 		flex-basis: 100px;
+		gap: 10px;
+	}
+
+	.team {
+		display: flex;
+		align-items: center;
+		flex-direction: row;
+		width: 100%;
 	}
 
 	.matchTeams > img {
@@ -215,11 +228,51 @@
 	.matchResult {
 		font-size: large;
 		font-weight: bold;
+		color: black;
+	}
+
+	.matchInfo {
+		color: black;
+		text-align: center;
 	}
 
 	.running {
 		animation: ongoing 1s infinite;
 		position: relative;
 		z-index: 2;
+	}
+
+	@media (max-width: 1300px) {
+		.match {
+			width: 300px;
+		}
+
+		.matchBox {
+			flex-direction: column;
+		}
+
+		.matchTeams {
+			flex-grow: 0;
+			flex-basis: 0;
+			flex-direction: row-reverse;
+		}
+
+		.team {
+			justify-content: center;
+		}
+
+		.team:last-child {
+			flex-direction: row-reverse;
+		}
+
+		.matchInfo {
+			font-size: small;
+		}
+	}
+
+	@media (max-width: 400px) {
+		.match {
+			width: 222px;
+		}
 	}
 </style>

@@ -47,6 +47,11 @@
 		max-width: 350px;
 	}
 
+	h2,
+	p {
+		text-align: center;
+	}
+
 	ul {
 		list-style-type: none;
 		padding: 0;

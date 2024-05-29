@@ -193,8 +193,9 @@
 		justify-content: space-between;
 		align-items: center;
 		justify-content: center;
-		padding: 10px 30px;
-		max-width: 750px;
+		padding: 10px clamp(5px, 4vw, 50px);
+		margin: 0 15px;
+		max-width: fit-content;
 		flex-grow: 1;
 		gap: 10px;
 		background-color: #646464;
@@ -221,6 +222,7 @@
 		align-items: center;
 		gap: 10px;
 		padding: 10px;
+		text-align: center;
 	}
 
 	.betInfo > a {

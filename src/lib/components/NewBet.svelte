@@ -2,6 +2,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import type { Match, Team } from '$lib/OpenLiga';
 	import type { User } from '$lib/server/Database';
+	import { onMount } from 'svelte';
 
 	export let data: {
 		match: Match;
@@ -13,12 +14,36 @@
 	let selectedTeam = data.match.team1;
 	let matchSelectHtml: HTMLDivElement;
 	let fetching = false;
+	let lastSize = 0;
+
+	onMount(() => {
+		lastSize = window.innerWidth;
+		window.addEventListener('resize', fixResizeSelection);
+
+		return () => {
+			window.removeEventListener('resize', fixResizeSelection);
+		};
+	});
+
+	function fixResizeSelection() {
+		if (selectedTeam === data.match.team1) return;
+
+		if ((lastSize > 450 && window.innerWidth <= 450) || (lastSize <= 450 && window.innerWidth > 450)) {
+			onTeamSelect(data.match.team1);
+		}
+		lastSize = window.innerWidth;
+	}
 
 	function onTeamSelect(team: Team) {
 		if (selectedTeam === team) return;
 		selectedTeam = team;
 
 		let keyframes: Keyframe[] = [{ transform: 'translateX(-1px)' }, { transform: 'translateX(calc(175px + 5px - 1px))' }];
+
+		if (window.innerWidth <= 450) {
+			keyframes = [{ transform: 'translateX(-1px)' }, { transform: 'translateX(calc(130px + 5px - 1px))' }];
+		}
+
 		const options: KeyframeAnimationOptions = {
 			duration: 333,
 			iterations: 1,
@@ -81,7 +106,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		padding: 10px 20px;
+		padding: 10px clamp(5px, 2vw, 20px);
 		margin: 50px 20px 0 20px;
 		gap: 10px;
 		background-color: #646464;
@@ -159,5 +184,15 @@
 		padding: 0;
 		z-index: -1;
 		border-radius: 20px;
+	}
+
+	@media (max-width: 450px) {
+		.teamSlider > button {
+			width: 130px;
+		}
+
+		#teamSelect {
+			width: calc(130px + 5px + 1px);
+		}
 	}
 </style>

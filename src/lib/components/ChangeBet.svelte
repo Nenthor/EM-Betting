@@ -90,7 +90,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		padding: 10px 20px;
+		padding: 10px clamp(2px, 1vw, 10px);
 		margin: 50px 20px 0 20px;
 		gap: 10px;
 		background-color: #646464;
