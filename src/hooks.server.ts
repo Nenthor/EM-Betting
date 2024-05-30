@@ -3,7 +3,7 @@ import { getUserFromCookies } from '$lib/server/Auth';
 import { redirect, type Handle } from '@sveltejs/kit';
 
 const onlyNonAuthRouts = ['/login', '/api/login', '/register', '/api/register'];
-const onlyAuthRouts = ['/api/logout'];
+const onlyAuthRouts = ['/api/logout', '/dashboard'];
 
 // Executes before route specific hooks
 export const handle: Handle = (async ({ event, resolve }) => {

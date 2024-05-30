@@ -227,8 +227,6 @@
 
 	.betInfo > a {
 		width: max-content;
-		padding-left: 50px;
-		padding-right: 50px;
 		color: var(--success);
 		background-color: white;
 		transition: all 0.33s;

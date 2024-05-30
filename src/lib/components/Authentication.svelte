@@ -57,7 +57,7 @@
 			if (fromParam) {
 				goto(`/match/${fromParam}`);
 			} else {
-				goto('/');
+				goto('/dashboard');
 			}
 		}
 	}

@@ -4,6 +4,7 @@
 
 	export let match: Match;
 	export let user: User;
+	export let showInfo = true;
 
 	function hasBetForTeam(team: Team) {
 		const bet = user.bets.find((bet) => bet.matchId === match.matchID);
@@ -99,11 +100,13 @@
 				<img class="matchImage {getMatchStatus(match.team2)}" src={match.team2.teamIconUrl} alt="Flagge von {match.team2.shortName}" />
 			</div>
 		</div>
-		<div class="matchBox">
-			<p class="matchInfo">
-				{getMatchInfo()}
-			</p>
-		</div>
+		{#if showInfo}
+			<div class="matchBox">
+				<p class="matchInfo">
+					{getMatchInfo()}
+				</p>
+			</div>
+		{/if}
 	</div>
 </div>
 

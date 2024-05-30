@@ -63,6 +63,10 @@ export function getMatch(matchId: any) {
 	return allMatches.find((match) => match.matchID == matchId);
 }
 
+export function getAllMatches() {
+	return allMatches;
+}
+
 export function getGroupStageMatches() {
 	return matchesInGroup;
 }
