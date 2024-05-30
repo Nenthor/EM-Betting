@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { defaultUser } from '$lib/DataHub';
+	import { getBackLink } from '$lib/General';
 	import BetStats from '$lib/components/BetStats.svelte';
 	import ChangeBet from '$lib/components/ChangeBet.svelte';
 	import MatchItem from '$lib/components/MatchItem.svelte';
@@ -118,12 +118,6 @@
 
 		return winner.teamId === bet.teamId;
 	}
-
-	function getBackLink() {
-		const from = new URLSearchParams(location.search).get('from');
-		if (from) return `/${from}`;
-		return '/';
-	}
 </script>
 
 <Navbar addHomeLink={false}>
@@ -134,7 +128,7 @@
 	<div class="standingBox">
 		<div class="standing">
 			<h2>{getMatchStatus()}</h2>
-			<MatchItem match={data.match} user={defaultUser} />
+			<MatchItem match={data.match} user={data.defaultUser} />
 		</div>
 	</div>
 	<div class="bet">

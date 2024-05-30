@@ -1,8 +1,11 @@
+import { getMatchWinner } from '$lib/General';
+import { getAllUsers, type User } from './Database';
 import type { Match, Stage } from './OpenLiga';
 import { fetchAvailableGroups, fetchCurrentGroup, fetchMatchData } from './OpenLiga';
-import type { User } from './server/Database';
 
 export const CACHE_TIME = 30_000; // in seconds
+
+let allUsers: User[] = [];
 
 let stages: Stage[] = [];
 let currentStage: Stage | null = null;
@@ -21,8 +24,15 @@ export const defaultUser: User = {
 	bets: []
 };
 
-export async function update() {
-	if (Date.now() - lastRefresh > CACHE_TIME) {
+export interface Ranking {
+	rank: number;
+	user: User;
+	correctBets: number;
+	totalBets: number;
+}
+
+export async function update(force = false) {
+	if (force || Date.now() - lastRefresh > CACHE_TIME) {
 		// Cache time is over - refresh data
 		lastRefresh = Date.now();
 		refreshDone = refreshData();
@@ -31,7 +41,11 @@ export async function update() {
 }
 
 async function refreshData() {
-	const newMatchData = await fetchMatchData(currentStage!.groupOrderID);
+	const promises = [];
+	let newMatchData: Match[] = [];
+	promises.push(fetchMatchData(currentStage!.groupOrderID).then((data) => (newMatchData = data)));
+	promises.push(getAllUsers().then((data) => (allUsers = data)));
+	await Promise.all(promises);
 
 	for (const newMatch of newMatchData) {
 		const oldMatchIndex = allMatchesIndices.get(newMatch.matchID);
@@ -84,6 +98,7 @@ async function firstLoad() {
 	promises.push(fetchAvailableGroups().then((data) => (stages = data)));
 	promises.push(fetchCurrentGroup().then((data) => (currentStage = data)));
 	promises.push(fetchMatchData().then((data) => (allMatches = data)));
+	promises.push(getAllUsers().then((data) => (allUsers = data)));
 	await Promise.all(promises);
 
 	for (let i = 0; i < allMatches.length; i++) {
@@ -156,4 +171,31 @@ function getMatchesInGroups(): { groupName: string; matches: Match[] }[] {
 	}
 
 	return matchesInGroup;
+}
+
+export function getUserRanking() {
+	const ranking: Ranking[] = allUsers.map((user) => {
+		const correctBets = user.bets.filter((bet) => getMatchWinner(getMatch(bet.matchId)) == bet.teamId).length;
+		const totalBets = user.bets.length;
+		return { rank: 0, user, correctBets, totalBets };
+	});
+
+	// Sort users: 1. Correct bets, 2. Total bets, 3. Alphabetically and set rank accordingly Alphabetically has same rank
+	ranking.sort((a, b) => {
+		if (a.correctBets != b.correctBets) return b.correctBets - a.correctBets;
+		if (a.totalBets != b.totalBets) return b.totalBets - a.totalBets;
+		return a.user.username.localeCompare(b.user.username);
+	});
+
+	let currentRank = 1;
+	ranking[0].rank = currentRank;
+	for (let i = 1; i < ranking.length; i++) {
+		currentRank++;
+		if (ranking[i].correctBets === ranking[i - 1].correctBets && ranking[i].totalBets === ranking[i - 1].totalBets) {
+			ranking[i].rank = ranking[i - 1].rank;
+		} else {
+			ranking[i].rank = currentRank;
+		}
+	}
+	return ranking;
 }

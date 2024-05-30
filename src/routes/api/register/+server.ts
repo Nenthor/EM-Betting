@@ -1,4 +1,5 @@
 import { checkDataIntegrity, generateHash, loginUser } from '$lib/server/Auth';
+import { update } from '$lib/server/DataHub';
 import { createUser, getUser, type User } from '$lib/server/Database';
 import { type RequestHandler } from '@sveltejs/kit';
 
@@ -11,6 +12,9 @@ export const POST = (async ({ request, cookies }) => {
 	}
 	if (!checkDataIntegrity(username, password)) {
 		return getResponse('error', 'Nur Buchstaben, Zahlen und _#* sind erlaubt.');
+	}
+	if (password.length < 3) {
+		return getResponse('error', 'Passwort muss mindestens 3 Zeichen lang sein.');
 	}
 	if (username.length < 3) {
 		return getResponse('error', 'Benutzername muss mindestens 3 Zeichen lang sein.');
@@ -34,6 +38,8 @@ export const POST = (async ({ request, cookies }) => {
 	if (!success) {
 		return getResponse('error', 'Fehler beim registrieren des Benutzers');
 	}
+
+	await update(true);
 
 	// Successful login
 	return getResponse('success', 'Erfolgreich registriert.');

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Match, Team } from '$lib/OpenLiga';
 	import type { User } from '$lib/server/Database';
+	import type { Match, Team } from '$lib/server/OpenLiga';
 
 	export let match: Match;
 	export let user: User;

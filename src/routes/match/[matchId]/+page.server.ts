@@ -1,5 +1,5 @@
-import { getGroupStageMatches, getMatch } from '$lib/DataHub';
 import { getClientUser } from '$lib/server/Auth';
+import { defaultUser, getGroupStageMatches, getMatch } from '$lib/server/DataHub';
 import { getQueryBets } from '$lib/server/Database';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
@@ -12,5 +12,5 @@ export const load = (async ({ params, locals }) => {
 
 	const matchBets = await getQueryBets('matchId', '==', match.matchID, 'createdBy', 'asc').then((bets) => bets.filter((bet) => bet.createdBy !== locals.user.username));
 
-	return { match, isAuthenticated: locals.isAuthenticated, user: getClientUser(locals.user), isGroupStageMatch, matchBets };
+	return { match, isAuthenticated: locals.isAuthenticated, user: getClientUser(locals.user), isGroupStageMatch, matchBets, defaultUser };
 }) satisfies PageServerLoad;

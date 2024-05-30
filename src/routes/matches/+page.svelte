@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
+	import { onLogout } from '$lib/General';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { onMount } from 'svelte';
@@ -33,16 +33,6 @@
 		return currentGroupIndex + 1;
 	}
 
-	async function onLogout() {
-		const response = await fetch('/api/logout', {
-			method: 'POST'
-		});
-
-		if (response.ok) {
-			await invalidateAll();
-		}
-	}
-
 	function getLeagueName() {
 		if (data.groupStageMatches.length > 0) {
 			return data.groupStageMatches[0].matches[0].leagueName;
@@ -70,6 +60,7 @@
 <Navbar addHomeLink={false}>
 	{#if data.isAuthenticated}
 		<li><a href="/dashboard">Dashboard</a></li>
+		<li><a href="/ranking?from=matches">Rangliste</a></li>
 		<li><a href="/logout" on:click|preventDefault={onLogout}>Logout</a></li>
 	{:else}
 		<li><a href="/login">Anmelden</a></li>

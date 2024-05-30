@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import type { Match } from '$lib/OpenLiga';
+	import { onLogout } from '$lib/General';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import type { Match } from '$lib/server/OpenLiga';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -11,46 +11,6 @@
 
 	let nonBetMatches = getNonBetMatches();
 	let historyMatches = getHistoryMatches();
-
-	async function onLogout() {
-		const response = await fetch('/api/logout', {
-			method: 'POST'
-		});
-
-		if (response.ok) {
-			goto('/matches');
-		}
-	}
-
-	function getWinRatio() {
-		let finishedMatches = 0;
-		const wins = data.user.bets.filter((bet) => {
-			const winner = getMatchWinner(bet.matchId);
-			if (winner != 0) finishedMatches++;
-			return winner === bet.teamId;
-		}).length;
-
-		if (finishedMatches === 0) return 0;
-		return wins / finishedMatches;
-	}
-
-	function getMatchWinner(matchId: number) {
-		const match = data.allMatches.find((match) => match.matchID === matchId);
-		if (!match || !match.matchResults || match.matchResults.length == 0) return 0;
-
-		const endResult = match.matchResults.find((m) => m.resultName.includes('Endergebnis'));
-
-		if (endResult) {
-			if (endResult.pointsTeam1 > endResult.pointsTeam2) return match.team1.teamId;
-			if (endResult.pointsTeam1 < endResult.pointsTeam2) return match.team2.teamId;
-			return 0;
-		}
-
-		const latestResult = match.matchResults[match.matchResults.length - 1];
-		if (latestResult.pointsTeam1 > latestResult.pointsTeam2) return match.team1.teamId;
-		if (latestResult.pointsTeam1 < latestResult.pointsTeam2) return match.team2.teamId;
-		return 0;
-	}
 
 	function getNonBetMatches() {
 		const select: Match[] = [];
@@ -79,6 +39,7 @@
 
 <Navbar addHomeLink={false}>
 	<li><a href="/matches">Matches</a></li>
+	<li><a href="/ranking?from=dashboard">Rangliste</a></li>
 	<li><a href="/logout" on:click|preventDefault={onLogout}>Logout</a></li>
 </Navbar>
 
@@ -87,17 +48,17 @@
 	<ul class="stats">
 		<li class="matchCount">
 			<p>Anzahl Wetten</p>
-			<p>{data.user.bets.length}</p>
+			<p>{data.ranking.totalBets}</p>
 		</li>
 		<li class="winRatio">
 			<p>Gewinnrate</p>
 			<p>
-				{Math.round(getWinRatio() * 100)}%
+				{data.ranking.totalBets === 0 ? 0 : (data.ranking.correctBets / data.ranking.totalBets).toFixed(0) + '%'}
 			</p>
 		</li>
 		<li class="ranking">
 			<p>Platzierung</p>
-			<p>#{1}</p>
+			<p>#{data.ranking.rank}</p>
 		</li>
 	</ul>
 	{#if nonBetMatches.length !== 0}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
-	import type { Match, Team } from '$lib/OpenLiga';
 	import type { User } from '$lib/server/Database';
+	import type { Match, Team } from '$lib/server/OpenLiga';
 
 	export let data: {
 		match: Match;

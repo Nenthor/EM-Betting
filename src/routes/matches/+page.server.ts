@@ -1,5 +1,5 @@
-import { getCurrentStage, getGroupStageMatches, getKnockoutStageMatches } from '$lib/DataHub';
 import { getClientUser } from '$lib/server/Auth';
+import { getCurrentStage, getGroupStageMatches, getKnockoutStageMatches } from '$lib/server/DataHub';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {
