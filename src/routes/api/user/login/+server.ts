@@ -1,3 +1,4 @@
+import { getResponse } from '$lib/General';
 import { checkDataIntegrity, loginUser } from '$lib/server/Auth';
 import { getUser } from '$lib/server/Database';
 import { type RequestHandler } from '@sveltejs/kit';
@@ -26,9 +27,3 @@ export const POST = (async ({ request, cookies }) => {
 	// Successful login
 	return getResponse('success', 'Erfolgreich angemeldet.');
 }) satisfies RequestHandler;
-
-function getResponse(type: string, message: string) {
-	return new Response(JSON.stringify({ type, message }), {
-		headers: { 'content-type': 'application/json' }
-	});
-}

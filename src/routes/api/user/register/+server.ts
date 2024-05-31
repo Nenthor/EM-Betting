@@ -1,3 +1,4 @@
+import { getResponse } from '$lib/General';
 import { checkDataIntegrity, generateHash, loginUser } from '$lib/server/Auth';
 import { update } from '$lib/server/DataHub';
 import { createUser, getUser, type User } from '$lib/server/Database';
@@ -44,9 +45,3 @@ export const POST = (async ({ request, cookies }) => {
 	// Successful login
 	return getResponse('success', 'Erfolgreich registriert.');
 }) satisfies RequestHandler;
-
-function getResponse(type: string, message: string) {
-	return new Response(JSON.stringify({ type, message }), {
-		headers: { 'content-type': 'application/json' }
-	});
-}

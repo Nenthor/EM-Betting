@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onLogout } from '$lib/General';
+	import { onAccountDelete, onLogout } from '$lib/General';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import NumberAnimation from '$lib/components/NumberAnimation.svelte';
@@ -36,12 +36,17 @@
 		}
 		return betMatches.sort((a, b) => new Date(b.matchDateTime).getTime() - new Date(a.matchDateTime).getTime());
 	}
+
+	function onDeleteConfirm() {
+		if (confirm('Bist du sicher, dass du deinen Account für IMMER löschen möchtest?')) {
+			onAccountDelete();
+		}
+	}
 </script>
 
 <Navbar addHomeLink={false}>
 	<li><a href="/matches">Matches</a></li>
 	<li><a href="/ranking?from=dashboard">Rangliste</a></li>
-	<li><a href="/logout" on:click|preventDefault={onLogout}>Logout</a></li>
 </Navbar>
 
 <main>
@@ -87,6 +92,12 @@
 			</ul>
 		{/if}
 	</div>
+	<div class="account">
+		<h2>Account</h2>
+		<p>Benutzername: <span>{data.user.username}</span></p>
+		<a class="success" href="/logout" on:click|preventDefault={onLogout}>Abmelden</a>
+		<a class="danger" href="/delete" on:click|preventDefault={onDeleteConfirm}>Account löschen</a>
+	</div>
 </main>
 
 <style>
@@ -118,7 +129,7 @@
 
 	.stats {
 		display: flex;
-		margin: 20px 0;
+		margin: 40px 0;
 		max-width: 1240px;
 		width: calc(100vw - 40px);
 		justify-content: space-between;
@@ -228,5 +239,62 @@
 		.stats > li > p:last-child {
 			font-size: 3rem;
 		}
+	}
+
+	.account {
+		background-color: #646464;
+		border-radius: 20px;
+		padding: 10px 20px 20px 20px;
+		max-width: 1200px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 15px;
+		margin: 0 15px 20px 15px;
+	}
+
+	.account > h2 {
+		font-size: 1.7em;
+		font-weight: bold;
+	}
+
+	.account > p {
+		text-align: center;
+	}
+
+	.account > p > span {
+		color: var(--primary);
+		font-weight: 600;
+	}
+
+	.account > a {
+		text-decoration: none;
+		background-color: white;
+		color: black;
+		padding: 10px 20px;
+		border-radius: 50px;
+		transition: all 0.33s;
+		font-weight: bold;
+		min-width: 150px;
+	}
+
+	.success {
+		color: var(--success) !important;
+		margin-bottom: 10px;
+	}
+
+	.success:hover {
+		background-color: var(--success) !important;
+		color: white !important;
+		margin-bottom: 10px;
+	}
+
+	.danger {
+		color: white !important;
+		background-color: var(--error) !important;
+	}
+
+	.danger:hover {
+		background-color: var(--error-dark) !important;
 	}
 </style>

@@ -31,7 +31,7 @@
 	async function onSubmit() {
 		disabled = true;
 
-		const response = await fetch(`/api/${authType}`, {
+		const response = await fetch(`/api/user/${authType}`, {
 			method: 'POST',
 			headers: {
 				username,

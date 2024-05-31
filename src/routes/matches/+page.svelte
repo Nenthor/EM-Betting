@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onLogout } from '$lib/General';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { onMount } from 'svelte';
@@ -60,9 +59,9 @@
 <Navbar addHomeLink={false}>
 	{#if data.isAuthenticated}
 		<li><a href="/dashboard">Dashboard</a></li>
-		<li><a href="/ranking?from=matches">Rangliste</a></li>
-		<li><a href="/logout" on:click|preventDefault={onLogout}>Logout</a></li>
-	{:else}
+	{/if}
+	<li><a href="/ranking?from=matches">Rangliste</a></li>
+	{#if !data.isAuthenticated}
 		<li><a href="/login">Anmelden</a></li>
 	{/if}
 </Navbar>

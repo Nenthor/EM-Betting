@@ -15,7 +15,7 @@
 	{#if from}
 		<li><a href="/match/{from}">Zurück</a></li>
 	{:else}
-		<li><a href="/">Home</a></li>
+		<li><a href="/matches">Matches</a></li>
 	{/if}
 </Navbar>
 

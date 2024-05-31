@@ -1,3 +1,4 @@
+import { getResponse } from '$lib/General';
 import { removeUserFromCache } from '$lib/server/Auth';
 import { getMatch, update } from '$lib/server/DataHub';
 import { addBet, setBet } from '$lib/server/Database';
@@ -49,9 +50,3 @@ export const POST = (async ({ request, locals }) => {
 	removeUserFromCache(locals.user.username);
 	return getResponse('success', 'Wette erfolgreich eingereicht.');
 }) satisfies RequestHandler;
-
-function getResponse(type: string, message: string) {
-	return new Response(JSON.stringify({ type, message }), {
-		headers: { 'content-type': 'application/json' }
-	});
-}

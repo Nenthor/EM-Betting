@@ -1,4 +1,4 @@
-import { invalidateAll } from '$app/navigation';
+import { goto, invalidateAll } from '$app/navigation';
 import type { Match } from './server/OpenLiga';
 
 export function getBackLink() {
@@ -8,13 +8,27 @@ export function getBackLink() {
 }
 
 export async function onLogout() {
-	const response = await fetch('/api/logout', {
+	const response = await fetch('/api/user/logout', {
 		method: 'POST'
 	});
 
 	if (response.ok) {
 		await invalidateAll();
 	}
+
+	goto('/matches');
+}
+
+export async function onAccountDelete() {
+	const response = await fetch('/api/user/delete', {
+		method: 'POST'
+	});
+
+	if (response.ok) {
+		await invalidateAll();
+	}
+
+	goto('/matches');
 }
 
 export function getMatchWinner(match: Match | undefined) {
@@ -34,4 +48,10 @@ export function getMatchWinner(match: Match | undefined) {
 		if (latestResult.pointsTeam1 < latestResult.pointsTeam2) return match.team2.teamId;
 	}
 	return 0;
+}
+
+export function getResponse(type: 'success' | 'error', message: string) {
+	return new Response(JSON.stringify({ type, message }), {
+		headers: { 'content-type': 'application/json' }
+	});
 }

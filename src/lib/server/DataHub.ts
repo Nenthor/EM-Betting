@@ -1,11 +1,13 @@
 import { getMatchWinner } from '$lib/General';
-import { getAllUsers, type User } from './Database';
+import { getClientUser } from './Auth';
+import { getAllBets, getAllUsers, type Bet, type User } from './Database';
 import type { Match, Stage } from './OpenLiga';
 import { fetchAvailableGroups, fetchCurrentGroup, fetchMatchData } from './OpenLiga';
 
-export const CACHE_TIME = 30_000; // in seconds
+export const CACHE_TIME = 1000 * 60 * 10; // in ms - 10 minutes
 
 let allUsers: User[] = [];
+let allBets: Bet[] = [];
 
 let stages: Stage[] = [];
 let currentStage: Stage | null = null;
@@ -45,6 +47,7 @@ async function refreshData() {
 	let newMatchData: Match[] = [];
 	promises.push(fetchMatchData(currentStage!.groupOrderID).then((data) => (newMatchData = data)));
 	promises.push(getAllUsers().then((data) => (allUsers = data)));
+	promises.push(getAllBets().then((data) => (allBets = data)));
 	await Promise.all(promises);
 
 	for (const newMatch of newMatchData) {
@@ -93,12 +96,17 @@ export function getCurrentStage() {
 	return currentStage;
 }
 
+export function getAllBetsForMatch(matchId: number) {
+	return allBets.filter((bet) => bet.matchId == matchId);
+}
+
 async function firstLoad() {
 	const promises = [];
 	promises.push(fetchAvailableGroups().then((data) => (stages = data)));
 	promises.push(fetchCurrentGroup().then((data) => (currentStage = data)));
 	promises.push(fetchMatchData().then((data) => (allMatches = data)));
 	promises.push(getAllUsers().then((data) => (allUsers = data)));
+	promises.push(getAllBets().then((data) => (allBets = data)));
 	await Promise.all(promises);
 
 	for (let i = 0; i < allMatches.length; i++) {
@@ -177,7 +185,7 @@ export function getUserRanking() {
 	const ranking: Ranking[] = allUsers.map((user) => {
 		const correctBets = user.bets.filter((bet) => getMatchWinner(getMatch(bet.matchId)) == bet.teamId).length;
 		const totalBets = user.bets.length;
-		return { rank: 0, user, correctBets, totalBets };
+		return { rank: 0, user: getClientUser(user), correctBets, totalBets };
 	});
 
 	// Sort users: 1. Correct bets, 2. Total bets, 3. Alphabetically and set rank accordingly Alphabetically has same rank

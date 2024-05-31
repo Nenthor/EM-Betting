@@ -76,8 +76,10 @@ export async function createUser(user: User) {
 	return await create('users', dbUser.username.toLowerCase(), dbUser);
 }
 
-export async function removeUser(username: string) {
-	return await remove('users', username.toLowerCase());
+export async function removeUser(user: User) {
+	const promises = user.bets.map((bet) => removeBet(bet.id));
+	await Promise.all(promises);
+	return await remove('users', user.username.toLowerCase());
 }
 
 // Bet functions
