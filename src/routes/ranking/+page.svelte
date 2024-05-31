@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getBackLink } from '$lib/General';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import NumberAnimation from '$lib/components/NumberAnimation.svelte';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
@@ -17,6 +18,10 @@
 		if (userRankIndex == -1 || data.ranking[userRankIndex - 1].rank <= 10) return userRankIndex;
 		else return userRankIndex - 1;
 	}
+
+	function getTotalAmmountOfBets() {
+		return data.ranking.reduce((acc, r) => acc + r.totalBets, 0);
+	}
 </script>
 
 <Navbar addHomeLink={false}>
@@ -26,53 +31,68 @@
 <main>
 	<h1>Rangliste</h1>
 	<div>
-		<table>
-			<thead>
-				<tr>
-					<th>Platz</th>
-					<th>Name</th>
-					<th>Richtige Wetten</th>
-					<th>Anzahl Wetten</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each data.ranking.filter((r) => r.rank <= 10) as ranking}
-					<tr class={ranking.user.username == data.user.username ? 'myRank' : ''}>
-						<td class={ranking.rank <= 3 ? `rank rank${ranking.rank}` : ''}><p>#{ranking.rank}</p></td>
-						<td>{ranking.user.username}</td>
-						<td>{ranking.correctBets}</td>
-						<td>{ranking.totalBets}</td>
+		<div>
+			<table>
+				<thead>
+					<tr>
+						<th>Platz</th>
+						<th>Name</th>
+						<th>Richtige Wetten</th>
+						<th>Anzahl Wetten</th>
 					</tr>
-				{/each}
-				{#if userRankIndex != -1 && data.ranking[userRankIndex].rank > 10}
-					{#if userRankIndex != -1 && data.ranking[userRankIndex - 2].rank > 10}
-						<td class="splitter" colspan="4"><img src="/images/svg/dotdotdot.svg" alt="splitt" /></td>
-					{/if}
-					{#each data.ranking.slice(getStartIndex(), userRankIndex + 2) as ranking}
+				</thead>
+				<tbody>
+					{#each data.ranking.filter((r) => r.rank <= 10) as ranking}
 						<tr class={ranking.user.username == data.user.username ? 'myRank' : ''}>
-							<td><p>#{ranking.rank}</p></td>
+							<td class={ranking.rank <= 3 ? `rank rank${ranking.rank}` : ''}><p>#{ranking.rank}</p></td>
 							<td>{ranking.user.username}</td>
 							<td>{ranking.correctBets}</td>
 							<td>{ranking.totalBets}</td>
 						</tr>
 					{/each}
-				{/if}
-			</tbody>
-		</table>
+					{#if userRankIndex != -1 && data.ranking[userRankIndex].rank > 10}
+						{#if userRankIndex != -1 && data.ranking[userRankIndex - 2].rank > 10}
+							<td class="splitter" colspan="4"><img src="/images/svg/dotdotdot.svg" alt="splitt" /></td>
+						{/if}
+						{#each data.ranking.slice(getStartIndex(), userRankIndex + 2) as ranking}
+							<tr class={ranking.user.username == data.user.username ? 'myRank' : ''}>
+								<td><p>#{ranking.rank}</p></td>
+								<td>{ranking.user.username}</td>
+								<td>{ranking.correctBets}</td>
+								<td>{ranking.totalBets}</td>
+							</tr>
+						{/each}
+					{/if}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div>
+		<div class="generalStats">
+			<h2>Allgemeine Statistik</h2>
+			<ul>
+				<li>
+					<p>Registrierte Nutzer</p>
+					<p><NumberAnimation value={data.ranking.length} /></p>
+				</li>
+				<li>
+					<p>Anzahl aller Wetten</p>
+					<p><NumberAnimation value={getTotalAmmountOfBets()} /></p>
+				</li>
+				<li>
+					<p>Wetten pro Nutzer</p>
+					<p><NumberAnimation value={getTotalAmmountOfBets() / data.ranking.length} roundPosition={2} /></p>
+				</li>
+			</ul>
+		</div>
 	</div>
 </main>
 
 <style>
-	main {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
 	h1 {
 		color: var(--primary-light);
 		margin: 20px 0 40px 0;
-		font-size: clamp(2rem, 10vw, 4rem);
+		font-size: clamp(2rem, 12vw, 4rem);
 		text-align: center;
 	}
 
@@ -80,6 +100,12 @@
 		margin: 0 10px;
 		max-width: calc(100vw - 20px);
 		overflow-x: auto;
+	}
+
+	main > div > div {
+		max-width: fit-content;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	table {
@@ -163,5 +189,80 @@
 
 	.rank3 > p {
 		background-color: #cd7f32;
+	}
+
+	.generalStats {
+		margin-top: 40px;
+		margin-bottom: 20px;
+		background-color: #646464;
+		padding: 10px 20px 20px 20px;
+		border-radius: 20px;
+	}
+
+	.generalStats > h2 {
+		font-size: 1.7em;
+		text-align: center;
+		margin: 0 20px 20px 20px;
+	}
+
+	.generalStats > ul {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 25px;
+	}
+
+	.generalStats > ul > li {
+		border-radius: 20px;
+		padding: 10px 20px;
+		text-align: center;
+	}
+
+	.generalStats > ul > li:nth-child(1) {
+		background-image: linear-gradient(315deg, #c70c2b 0%, #f3213d 74%);
+	}
+
+	.generalStats > ul > li:nth-child(2) {
+		background-image: linear-gradient(315deg, #d49c01 0%, #e0ad05 74%);
+	}
+
+	.generalStats > ul > li:nth-child(3) {
+		background-image: linear-gradient(315deg, #298d35 0%, #2f9e44 74%);
+	}
+
+	.generalStats > ul > li > p:first-child {
+		font-weight: 500;
+		font-size: 1.2rem;
+		text-shadow: 0 0 1.2rem #0005;
+	}
+
+	.generalStats > ul > li > p:last-child {
+		font-weight: 900;
+		font-size: 2rem;
+		text-shadow: 0 0 2rem #0005;
+	}
+
+	@media (max-width: 800px) {
+		.generalStats {
+			max-width: 500px;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.generalStats {
+			max-width: min-content;
+		}
+
+		.generalStats > h2 {
+			font-size: 1.5em;
+		}
+
+		.generalStats > ul > li > p:first-child {
+			font-size: 1rem;
+		}
+
+		.generalStats > ul > li > p:last-child {
+			font-size: 1.5rem;
+		}
 	}
 </style>

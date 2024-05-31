@@ -2,6 +2,7 @@
 	import { onLogout } from '$lib/General';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import NumberAnimation from '$lib/components/NumberAnimation.svelte';
 	import type { Match } from '$lib/server/OpenLiga';
 	import type { PageData } from './$types';
 
@@ -46,19 +47,17 @@
 <main>
 	<h1 class="title">Wettzentrale von <span>{data.user.username}</span></h1>
 	<ul class="stats">
-		<li class="matchCount">
+		<li>
 			<p>Anzahl Wetten</p>
-			<p>{data.ranking.totalBets}</p>
+			<p><NumberAnimation value={data.ranking.totalBets} /></p>
 		</li>
-		<li class="winRatio">
-			<p>Gewinnrate</p>
-			<p>
-				{data.ranking.totalBets === 0 ? 0 : (data.ranking.correctBets / data.ranking.totalBets).toFixed(0) + '%'}
-			</p>
-		</li>
-		<li class="ranking">
+		<li>
 			<p>Platzierung</p>
-			<p>#{data.ranking.rank}</p>
+			<p>#<NumberAnimation value={data.ranking.rank} startValue={data.maxRank} /></p>
+		</li>
+		<li>
+			<p>Richtige Wetten</p>
+			<p><NumberAnimation value={data.ranking.correctBets} /></p>
 		</li>
 	</ul>
 	{#if nonBetMatches.length !== 0}
@@ -71,7 +70,7 @@
 					</a>
 				{/each}
 			</ul>
-			<a href="/matches">Alle Matches anzeigen</a>
+			<a href="/matches">Mehr anzeigen</a>
 		</div>
 	{/if}
 	<div class="statBox" id="history">
@@ -98,7 +97,7 @@
 		align-items: center;
 	}
 	.title {
-		margin-top: 20px;
+		margin: 20px 10px 0 10px;
 		font-size: 3em;
 	}
 	.title > span {
@@ -119,8 +118,10 @@
 
 	.stats {
 		display: flex;
-		margin: 40px 0;
-		gap: clamp(20px, 5vw, 200px);
+		margin: 20px 0;
+		max-width: 1240px;
+		width: calc(100vw - 40px);
+		justify-content: space-between;
 		color: white;
 	}
 
@@ -130,15 +131,15 @@
 		min-width: 300px;
 	}
 
-	.matchCount {
+	.stats > li:nth-child(1) {
 		background-image: linear-gradient(315deg, #c70c2b 0%, #f3213d 74%);
 	}
 
-	.winRatio {
+	.stats > li:nth-child(2) {
 		background-image: linear-gradient(315deg, #d49c01 0%, #e0ad05 74%);
 	}
 
-	.ranking {
+	.stats > li:nth-child(3) {
 		background-image: linear-gradient(315deg, #298d35 0%, #2f9e44 74%);
 	}
 
@@ -157,6 +158,13 @@
 
 	#history {
 		max-width: 600px;
+	}
+
+	#history > ul {
+		max-height: 500px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		border-radius: 50px;
 	}
 
 	.statBox > h2 {
