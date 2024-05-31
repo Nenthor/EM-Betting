@@ -22,6 +22,11 @@
 	function getTotalAmmountOfBets() {
 		return data.ranking.reduce((acc, r) => acc + r.totalBets, 0);
 	}
+
+	function getBetsPerUser() {
+		if (data.ranking.length == 0) return 0;
+		return getTotalAmmountOfBets() / data.ranking.length;
+	}
 </script>
 
 <Navbar addHomeLink={false}>
@@ -81,7 +86,7 @@
 				</li>
 				<li>
 					<p>Wetten pro Nutzer</p>
-					<p><NumberAnimation value={getTotalAmmountOfBets() / data.ranking.length} roundPosition={2} /></p>
+					<p><NumberAnimation value={getBetsPerUser()} roundPosition={2} /></p>
 				</li>
 			</ul>
 		</div>

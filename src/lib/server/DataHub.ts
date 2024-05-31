@@ -220,15 +220,18 @@ export function getUserRanking() {
 		return a.user.username.localeCompare(b.user.username);
 	});
 
-	let currentRank = 1;
-	ranking[0].rank = currentRank;
-	for (let i = 1; i < ranking.length; i++) {
-		currentRank++;
-		if (ranking[i].correctBets === ranking[i - 1].correctBets && ranking[i].totalBets === ranking[i - 1].totalBets) {
-			ranking[i].rank = ranking[i - 1].rank;
-		} else {
-			ranking[i].rank = currentRank;
+	if (ranking.length > 0) {
+		let currentRank = 1;
+		ranking[0].rank = currentRank;
+		for (let i = 1; i < ranking.length; i++) {
+			currentRank++;
+			if (ranking[i].correctBets === ranking[i - 1].correctBets && ranking[i].totalBets === ranking[i - 1].totalBets) {
+				ranking[i].rank = ranking[i - 1].rank;
+			} else {
+				ranking[i].rank = currentRank;
+			}
 		}
 	}
+
 	return ranking;
 }
