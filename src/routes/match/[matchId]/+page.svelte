@@ -158,7 +158,7 @@
 		{:else if data.match.team1.teamName.includes('TBD') || data.match.team2.teamName.includes('TBD')}
 			<div class="betInfo">
 				<p>Wetten sind erst möglich, wenn beide Teams feststehen.</p>
-				<a href="/">Zurück</a>
+				<a href={backLink}>Zurück</a>
 			</div>
 		{:else if data.user.bets.find((bet) => bet.matchId === data.match.matchID)}
 			<ChangeBet {data} />
@@ -221,7 +221,7 @@
 
 	.betInfo > a {
 		width: max-content;
-		color: var(--success);
+		color: var(--success-dark);
 		background-color: white;
 		transition: all 0.33s;
 		text-decoration: none;
@@ -235,7 +235,7 @@
 
 	.betInfo > a:hover {
 		color: white;
-		background-color: var(--success);
+		background-color: var(--success-dark);
 	}
 
 	p > .success {

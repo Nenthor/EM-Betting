@@ -121,14 +121,14 @@
 	}
 
 	#submit {
-		color: var(--success);
+		color: var(--success-dark);
 		background-color: white;
 		transition: all 0.33s;
 	}
 
 	#submit:hover {
 		color: white;
-		background-color: var(--success);
+		background-color: var(--success-dark);
 	}
 
 	.box > form {

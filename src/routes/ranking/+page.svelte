@@ -153,7 +153,7 @@
 	}
 
 	table tr:nth-child(even) {
-		background-color: #777;
+		background-color: #757575;
 	}
 
 	.myRank {

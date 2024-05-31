@@ -14,14 +14,14 @@ export const POST = (async ({ request, cookies }) => {
 	if (!checkDataIntegrity(username, password)) {
 		return getResponse('error', 'Nur Buchstaben, Zahlen und _#* sind erlaubt.');
 	}
-	if (password.length < 3) {
-		return getResponse('error', 'Passwort muss mindestens 3 Zeichen lang sein.');
-	}
 	if (username.length < 3) {
 		return getResponse('error', 'Benutzername muss mindestens 3 Zeichen lang sein.');
 	}
 	if (username.length > 15) {
 		return getResponse('error', 'Benutzername darf maximal 15 Zeichen lang sein.');
+	}
+	if (password.length < 3) {
+		return getResponse('error', 'Passwort muss mindestens 3 Zeichen lang sein.');
 	}
 
 	const checkUsername = await getUser(username);

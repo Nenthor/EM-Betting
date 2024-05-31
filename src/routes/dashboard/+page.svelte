@@ -70,9 +70,11 @@
 			<h2>Heute schon gewettet?</h2>
 			<ul class="matches">
 				{#each nonBetMatches as match}
-					<a href="/match/{match.matchID}?from=dashboard">
-						<MatchItem {match} user={data.user} />
-					</a>
+					<li>
+						<a href="/match/{match.matchID}?from=dashboard">
+							<MatchItem {match} user={data.user} />
+						</a>
+					</li>
 				{/each}
 			</ul>
 			<a href="/matches">Mehr anzeigen</a>
@@ -85,9 +87,11 @@
 		{:else}
 			<ul class="matches">
 				{#each historyMatches as match}
-					<a href="/match/{match.matchID}?from=dashboard">
-						<MatchItem {match} user={data.user} showInfo={false} />
-					</a>
+					<li>
+						<a href="/match/{match.matchID}?from=dashboard">
+							<MatchItem {match} user={data.user} showInfo={false} />
+						</a>
+					</li>
 				{/each}
 			</ul>
 		{/if}
@@ -201,7 +205,7 @@
 	}
 
 	.statBox > a {
-		color: var(--success);
+		color: var(--success-dark);
 		background-color: white;
 		transition: all 0.33s;
 		text-decoration: none;
@@ -215,7 +219,7 @@
 
 	.statBox > a:hover {
 		color: white;
-		background-color: var(--success);
+		background-color: var(--success-dark);
 	}
 
 	@media (max-width: 1200px) {
@@ -260,10 +264,11 @@
 
 	.account > p {
 		text-align: center;
+		font-size: 1.1rem;
 	}
 
 	.account > p > span {
-		color: var(--primary);
+		color: var(--primary-light);
 		font-weight: 600;
 	}
 
@@ -279,12 +284,12 @@
 	}
 
 	.success {
-		color: var(--success) !important;
+		color: var(--success-dark) !important;
 		margin-bottom: 10px;
 	}
 
 	.success:hover {
-		background-color: var(--success) !important;
+		background-color: var(--success-dark) !important;
 		color: white !important;
 		margin-bottom: 10px;
 	}

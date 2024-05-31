@@ -129,7 +129,7 @@
 	}
 
 	form > p > a {
-		color: var(--primary);
+		color: var(--primary-light);
 	}
 
 	form > div {
@@ -150,27 +150,27 @@
 	}
 
 	form > button {
-		color: #32cd32;
+		color: var(--success-dark);
 		width: 75%;
 		outline: transparent;
 	}
 
 	form > button:hover {
 		color: white;
-		background-color: #32cd32;
+		background-color: var(--success-dark);
 	}
 
 	form > button:focus {
 		color: white;
-		background-color: #32cd32;
+		background-color: var(--success-dark);
 	}
 
 	.error {
-		color: #cd3232;
+		color: var(--error);
 	}
 
 	.success {
-		color: #32cd32;
+		color: var(--success-dark);
 	}
 
 	@media (max-width: 400px) {

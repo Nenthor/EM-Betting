@@ -72,7 +72,7 @@
 		Klicke ein Spiel an, um auf dein Favoriten-Team zu wetten. Mit <img src="/images/svg/star.svg" alt="selected" width="20px" />-versehenen Mannschaften sind deine bisherigen Wetten. Einreichungen
 		sind nur bis kurz vor Anpfiff möglich. Viel Erfolg!
 	</p>
-	<ul class="stages">
+	<div class="stages">
 		{#if data.groupStageMatches.length != 0}
 			<details class="stage" bind:open={openStages[0]} on:toggle={() => resetAnimation(0)}>
 				<summary
@@ -88,9 +88,11 @@
 							<h2 class="groupName">{group.groupName}</h2>
 							<ul class="matches">
 								{#each group.matches as match}
-									<a href="/match/{match.matchID}?from=matches">
-										<MatchItem {match} user={data.user} />
-									</a>
+									<li>
+										<a href="/match/{match.matchID}?from=matches">
+											<MatchItem {match} user={data.user} />
+										</a>
+									</li>
 								{/each}
 							</ul>
 						</li>
@@ -110,15 +112,17 @@
 					>
 					<ul class="matches" bind:this={matchesHtml[i + 1]}>
 						{#each stage.matches as match}
-							<a href="/match/{match.matchID}?from=matches">
-								<MatchItem {match} user={data.user} />
-							</a>
+							<li>
+								<a href="/match/{match.matchID}?from=matches">
+									<MatchItem {match} user={data.user} />
+								</a>
+							</li>
 						{/each}
 					</ul>
 				</details>
 			{/each}
 		</div>
-	</ul>
+	</div>
 </main>
 
 <style>

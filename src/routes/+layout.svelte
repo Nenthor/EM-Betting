@@ -9,11 +9,12 @@
 
 	:root {
 		--success: #32cd32;
+		--success-dark: #218721;
 		--error: #cd3232;
 		--error-dark: #b40000;
 		--primary: #3cd;
-		--primary-light: #28e6fc;
-		--primary-dark: #00a6b4;
+		--primary-light: #8df1fc;
+		--primary-dark: #00838f;
 	}
 
 	* {
@@ -68,6 +69,7 @@
 
 	::-webkit-scrollbar {
 		width: 8px;
+		height: 8px;
 	}
 
 	::-webkit-scrollbar-track {
