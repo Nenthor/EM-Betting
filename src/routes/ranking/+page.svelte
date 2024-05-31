@@ -90,7 +90,7 @@
 
 <style>
 	h1 {
-		color: var(--primary-light);
+		color: var(--primary);
 		margin: 20px 0 40px 0;
 		font-size: clamp(2rem, 12vw, 4rem);
 		text-align: center;

@@ -133,7 +133,7 @@
 	.title {
 		text-align: center;
 		margin: 20px;
-		color: var(--primary-light);
+		color: var(--primary);
 		font-size: clamp(1.5rem, 4vw, 3rem);
 	}
 
