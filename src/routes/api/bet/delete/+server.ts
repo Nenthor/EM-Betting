@@ -1,6 +1,5 @@
 import { getResponse } from '$lib/General';
-import { removeUserFromCache } from '$lib/server/Auth';
-import { getMatch, update } from '$lib/server/DataHub';
+import { getMatch, updateCacheBet, updateCacheUser } from '$lib/server/DataHub';
 import { removeBet } from '$lib/server/Database';
 import { type RequestHandler } from '@sveltejs/kit';
 
@@ -31,9 +30,11 @@ export const POST = (async ({ request, locals }) => {
 		return getResponse('error', 'Wette konnte nicht entfernt werden.');
 	}
 
-	await update(true);
+	// Remove bet from cache
+	updateCacheBet(bet, true);
+	locals.user.bets = locals.user.bets.filter((b) => b.id !== bet.id);
+	updateCacheUser(locals.user);
 
 	// Successfully removed bet
-	removeUserFromCache(locals.user.username);
 	return getResponse('success', 'Wette erfolgreich gelöscht.');
 }) satisfies RequestHandler;

@@ -2,12 +2,11 @@ import { JWT_SECRET } from '$env/static/private';
 import type { Cookies } from '@sveltejs/kit';
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import jwt from 'jsonwebtoken';
+import { getUserFromCache, updateCacheUser } from './DataHub';
 import { getUser, type User } from './Database';
 
 const SECRET = generateJWTSecret(JWT_SECRET); // We only have one password so we can use it as a secret
 const expiresIn = 60 * 60 * 24 * 30; // 30 days
-const userCache = new Map<string, User>();
-const MAX_CACHE_SIZE = 50;
 
 export const cookieName = '__session'; // NEEEDS TO BE NAMED LIKE THIS BECAUSE FIREBASE ONLY ALLOWS THIS NAME
 
@@ -20,13 +19,12 @@ export async function getUserFromCookies(cookies: Cookies): Promise<User | undef
 		if (typeof sub !== 'string') throw new Error('Invalid token');
 
 		const username = sub.toString();
-		if (userCache.has(username)) return userCache.get(username); // cached user
-		const user = await getUser(username);
+		let user = getUserFromCache(username);
+		if (user) return user; // cached user
+
+		user = await getUser(username);
 		if (user) {
-			userCache.set(username, user);
-			if (userCache.size > MAX_CACHE_SIZE) {
-				userCache.delete(userCache.keys().next().value);
-			}
+			updateCacheUser(user);
 			return user;
 		}
 	} catch (e) {
@@ -44,13 +42,8 @@ export function loginUser(user: User, password: string, cookies: Cookies) {
 	return false;
 }
 
-export function logoutUser(user: User, cookies: Cookies) {
+export function logoutUser(cookies: Cookies) {
 	cookies.delete(cookieName, { path: '/' });
-	removeUserFromCache(user.username);
-}
-
-export function removeUserFromCache(username: string) {
-	userCache.delete(username);
 }
 
 function generateJWTSecret(secret: string) {

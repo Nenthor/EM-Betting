@@ -1,6 +1,6 @@
 import { getResponse } from '$lib/General';
 import { checkDataIntegrity, generateHash, loginUser } from '$lib/server/Auth';
-import { update } from '$lib/server/DataHub';
+import { updateCacheUser } from '$lib/server/DataHub';
 import { createUser, getUser, type User } from '$lib/server/Database';
 import { type RequestHandler } from '@sveltejs/kit';
 
@@ -29,18 +29,19 @@ export const POST = (async ({ request, cookies }) => {
 		return getResponse('error', 'Benutzername existiert bereits.');
 	}
 
-	const user: User = { username, password: generateHash(password), photoURL: 'default', bets: [] };
+	const user: User = { username, password: generateHash(password), bets: [] };
 	const createSuccess = await createUser(user);
 	if (!createSuccess) {
 		return getResponse('error', 'Fehler beim Erstellen des Benutzers.');
 	}
 
-	const success = await loginUser(user, password, cookies);
+	const success = loginUser(user, password, cookies);
 	if (!success) {
 		return getResponse('error', 'Fehler beim registrieren des Benutzers');
 	}
 
-	await update(true);
+	// Update cache
+	updateCacheUser(user);
 
 	// Successful login
 	return getResponse('success', 'Erfolgreich registriert.');

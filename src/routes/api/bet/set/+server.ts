@@ -1,6 +1,5 @@
 import { getResponse } from '$lib/General';
-import { removeUserFromCache } from '$lib/server/Auth';
-import { getMatch, update } from '$lib/server/DataHub';
+import { getMatch, updateCacheBet, updateCacheUser } from '$lib/server/DataHub';
 import { addBet, setBet } from '$lib/server/Database';
 import { type RequestHandler } from '@sveltejs/kit';
 
@@ -40,13 +39,16 @@ export const POST = (async ({ request, locals }) => {
 		success = !!bet;
 	}
 
-	if (!success) {
+	if (!success || !bet) {
 		return getResponse('error', 'Fehler beim Einreichen der Wette.');
 	}
 
-	await update(true);
+	// Update cache
+	updateCacheBet(bet);
+	locals.user.bets = locals.user.bets.filter((b) => b.matchId !== matchId);
+	locals.user.bets.push(bet);
+	updateCacheUser(locals.user);
 
 	// Successfully bet
-	removeUserFromCache(locals.user.username);
 	return getResponse('success', 'Wette erfolgreich eingereicht.');
 }) satisfies RequestHandler;

@@ -1,6 +1,6 @@
 import { getResponse } from '$lib/General';
-import { logoutUser, removeUserFromCache } from '$lib/server/Auth';
-import { update } from '$lib/server/DataHub';
+import { logoutUser } from '$lib/server/Auth';
+import { updateCacheUser } from '$lib/server/DataHub';
 import { removeUser } from '$lib/server/Database';
 import { type RequestHandler } from '@sveltejs/kit';
 
@@ -15,12 +15,11 @@ export const POST = (async ({ locals, cookies }) => {
 		return getResponse('error', 'Benutzer konnte nicht entfernt werden.');
 	}
 
-	// logout user - remove session cookie
-	logoutUser(locals.user, cookies);
+	// remove session cookie
+	logoutUser(cookies);
 
-	// invalidate user cache & update data
-	removeUserFromCache(locals.user.username);
-	await update(true);
+	// update cache
+	updateCacheUser(locals.user, true); // bets are removed as well
 
 	// Successful login
 	return getResponse('success', 'Erfolgreich angemeldet.');

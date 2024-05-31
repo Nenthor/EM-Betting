@@ -7,7 +7,7 @@ export const POST = (async ({ cookies, locals }) => {
 		return getResponse('error', 'Sie sind nicht angemeldet.');
 	}
 
-	logoutUser(locals.user, cookies);
+	logoutUser(cookies);
 
 	// Successful logout
 	return getResponse('success', 'Erfolgreich abgemeldet.');

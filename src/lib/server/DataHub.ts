@@ -4,7 +4,7 @@ import { getAllBets, getAllUsers, type Bet, type User } from './Database';
 import type { Match, Stage } from './OpenLiga';
 import { fetchAvailableGroups, fetchCurrentGroup, fetchMatchData } from './OpenLiga';
 
-export const CACHE_TIME = 1000 * 60 * 10; // in ms - 10 minutes
+const CACHE_TIME = 1000 * 60 * 15; // in ms - 15 minutes
 
 let allUsers: User[] = [];
 let allBets: Bet[] = [];
@@ -22,7 +22,6 @@ let refreshDone = firstLoad();
 export const defaultUser: User = {
 	username: '',
 	password: '',
-	photoURL: '',
 	bets: []
 };
 
@@ -98,6 +97,32 @@ export function getCurrentStage() {
 
 export function getAllBetsForMatch(matchId: number) {
 	return allBets.filter((bet) => bet.matchId == matchId);
+}
+
+export function getUserFromCache(username: string) {
+	return allUsers.find((user) => user.username == username);
+}
+
+export async function updateCacheUser(user: User, remove = false) {
+	const userIndex = allUsers.findIndex((u) => u.username == user.username);
+	if (remove) {
+		if (userIndex == -1) return;
+		allUsers.splice(userIndex, 1);
+		allBets = allBets.filter((bet) => bet.createdBy != user.username);
+	} else {
+		if (userIndex != -1) allUsers[userIndex] = user;
+		else allUsers.push(user);
+	}
+}
+
+export async function updateCacheBet(bet: Bet, remove = false) {
+	const betIndex = allBets.findIndex((b) => b.id == bet.id);
+	if (remove) {
+		if (betIndex != -1) allBets.splice(betIndex, 1);
+	} else {
+		if (betIndex != -1) allBets[betIndex] = bet;
+		else allBets.push(bet);
+	}
 }
 
 async function firstLoad() {

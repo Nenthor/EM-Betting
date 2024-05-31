@@ -4,7 +4,6 @@ import { add, create, get, getAll, getQuery, remove, set } from './Firebase';
 export interface User {
 	username: string;
 	password: string;
-	photoURL: string;
 	bets: Bet[];
 }
 
