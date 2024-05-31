@@ -75,13 +75,17 @@
 		}
 		return team.teamName;
 	}
+
+	function safeUrl(url: string) {
+		return url.replace('http://', 'https://');
+	}
 </script>
 
 <div class="match {isRunning() ? 'running' : ''}">
 	<div>
 		<div class="matchBox">
 			<div class="team">
-				<img class="matchImage {getMatchStatus(match.team1)}" src={match.team1.teamIconUrl} alt="Flagge von {match.team1.shortName}" />
+				<img class="matchImage {getMatchStatus(match.team1)}" src={safeUrl(match.team1.teamIconUrl)} alt="Flagge von {match.team1.shortName}" />
 				<p class="matchTeams">
 					{#if hasBetForTeam(match.team1)}
 						<img src="/images/svg/star.svg" alt="selected" />
@@ -97,7 +101,7 @@
 						<img src="/images/svg/star.svg" alt="selected" />
 					{/if}
 				</p>
-				<img class="matchImage {getMatchStatus(match.team2)}" src={match.team2.teamIconUrl} alt="Flagge von {match.team2.shortName}" />
+				<img class="matchImage {getMatchStatus(match.team2)}" src={safeUrl(match.team2.teamIconUrl)} alt="Flagge von {match.team2.shortName}" />
 			</div>
 		</div>
 		{#if showInfo}
