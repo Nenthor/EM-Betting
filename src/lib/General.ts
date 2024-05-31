@@ -36,14 +36,14 @@ export function getMatchWinner(match: Match | undefined) {
 
 	const endResult = match.matchResults.find((m) => m.resultName.includes('Endergebnis'));
 
-	if (endResult && endResult.pointsTeam1 && endResult.pointsTeam2) {
+	if (endResult && endResult.pointsTeam1 !== undefined && endResult.pointsTeam2 !== undefined) {
 		if (endResult.pointsTeam1 > endResult.pointsTeam2) return match.team1.teamId;
 		if (endResult.pointsTeam1 < endResult.pointsTeam2) return match.team2.teamId;
 		return 0;
 	}
 
 	const latestResult = match.matchResults[match.matchResults.length - 1];
-	if (latestResult && latestResult.pointsTeam1 && latestResult.pointsTeam2) {
+	if (latestResult && latestResult.pointsTeam1 !== undefined && latestResult.pointsTeam2 !== undefined) {
 		if (latestResult.pointsTeam1 > latestResult.pointsTeam2) return match.team1.teamId;
 		if (latestResult.pointsTeam1 < latestResult.pointsTeam2) return match.team2.teamId;
 	}
