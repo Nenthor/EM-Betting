@@ -31,23 +31,25 @@ export async function onAccountDelete() {
 	goto('/matches');
 }
 
-export function getMatchWinner(match: Match | undefined) {
-	if (!match) return 0;
+export function isMatchWinner(match: Match | undefined, teamId: number) {
+	if (!match) return false;
+	if (new Date(match.matchDateTimeUTC).getTime() > new Date().getTime()) return false;
 
 	const endResult = match.matchResults.find((m) => m.resultName.includes('Endergebnis'));
 
 	if (endResult && endResult.pointsTeam1 !== undefined && endResult.pointsTeam2 !== undefined) {
-		if (endResult.pointsTeam1 > endResult.pointsTeam2) return match.team1.teamId;
-		if (endResult.pointsTeam1 < endResult.pointsTeam2) return match.team2.teamId;
-		return 0;
+		if (endResult.pointsTeam1 > endResult.pointsTeam2) return match.team1.teamId == teamId;
+		if (endResult.pointsTeam1 < endResult.pointsTeam2) return match.team2.teamId == teamId;
+		return true; // draw - both teams are winners
 	}
 
 	const latestResult = match.matchResults[match.matchResults.length - 1];
 	if (latestResult && latestResult.pointsTeam1 !== undefined && latestResult.pointsTeam2 !== undefined) {
-		if (latestResult.pointsTeam1 > latestResult.pointsTeam2) return match.team1.teamId;
-		if (latestResult.pointsTeam1 < latestResult.pointsTeam2) return match.team2.teamId;
+		if (latestResult.pointsTeam1 > latestResult.pointsTeam2) return match.team1.teamId == teamId;
+		if (latestResult.pointsTeam1 < latestResult.pointsTeam2) return match.team2.teamId == teamId;
+		return true; // draw - both teams are winners
 	}
-	return 0;
+	return false; // match is not finished
 }
 
 export function getResponse(type: 'success' | 'error', message: string) {

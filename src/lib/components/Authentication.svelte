@@ -10,7 +10,6 @@
 	let message = '';
 
 	let disabled = false;
-	let autoFocusElement: HTMLInputElement;
 	let form: HTMLFormElement;
 	let animation: NodeJS.Timeout;
 
@@ -19,7 +18,6 @@
 		const serachParams = new URLSearchParams(location.search);
 		fromParam = serachParams.get('from');
 
-		autoFocusElement.focus();
 		animation = startCircleAnimation();
 		await invalidateAll();
 	});
@@ -85,7 +83,7 @@
 
 	<div>
 		<label for="username">Benutzername:</label>
-		<input bind:value={username} bind:this={autoFocusElement} id="username" type="text" required autocomplete="off" />
+		<input bind:value={username} id="username" type="text" required autocomplete="off" />
 	</div>
 	<div>
 		<label for="password">Passwort:</label>

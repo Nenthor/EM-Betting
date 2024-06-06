@@ -1,3 +1,4 @@
+import { STOP_AUTH } from '$env/static/private';
 import { getResponse } from '$lib/General';
 import { checkDataIntegrity, loginUser } from '$lib/server/Auth';
 import { getUserFromCache } from '$lib/server/DataHub';
@@ -23,6 +24,10 @@ export const POST = (async ({ request, cookies }) => {
 	const success = loginUser(user, password, cookies);
 	if (!success) {
 		return getResponse('error', 'Benuztername oder Passwort ist falsch.');
+	}
+
+	if (STOP_AUTH === 'true') {
+		return getResponse('error', 'Anmelden ist deaktiviert.');
 	}
 
 	// Successful login

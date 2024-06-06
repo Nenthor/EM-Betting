@@ -1,3 +1,4 @@
+import { STOP_AUTH } from '$env/static/private';
 import { getResponse } from '$lib/General';
 import { checkDataIntegrity, generateHash, loginUser } from '$lib/server/Auth';
 import { updateCacheUser } from '$lib/server/DataHub';
@@ -27,6 +28,10 @@ export const POST = (async ({ request, cookies }) => {
 	const checkUsername = await getUser(username);
 	if (checkUsername) {
 		return getResponse('error', 'Benutzername existiert bereits.');
+	}
+
+	if (STOP_AUTH === 'true') {
+		return getResponse('error', 'Registrierung ist deaktiviert.');
 	}
 
 	const user: User = { username, password: generateHash(password), bets: [] };

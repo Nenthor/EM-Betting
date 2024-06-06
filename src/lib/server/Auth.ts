@@ -1,4 +1,4 @@
-import { JWT_SECRET } from '$env/static/private';
+import { JWT_SECRET, STOP_AUTH } from '$env/static/private';
 import type { Cookies } from '@sveltejs/kit';
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import jwt from 'jsonwebtoken';
@@ -12,7 +12,7 @@ export const cookieName = '__session'; // NEEEDS TO BE NAMED LIKE THIS BECAUSE F
 
 export async function getUserFromCookies(cookies: Cookies): Promise<User | undefined> {
 	const token = cookies.get(cookieName);
-	if (!token) return;
+	if (!token || STOP_AUTH === 'true') return;
 
 	try {
 		const { sub } = jwt.verify(token, SECRET);

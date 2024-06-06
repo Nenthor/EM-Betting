@@ -79,7 +79,7 @@
 		<button on:click|preventDefault={submitBet} id="submit">Für {getUnselectedTeam(selectedTeam).teamName} wetten</button>
 		<button on:click|preventDefault={deleteBet} id="delete">Wette löschen</button>
 		{#if data.isGroupStageMatch}
-			<p class="groupStageInfo">Das Wetten auf Unentschieden ist nicht möglich.</p>
+			<p class="groupStageInfo">Bei Unentschieden ist jede Wette richtig.</p>
 		{/if}
 	</form>
 </div>
@@ -152,5 +152,6 @@
 		text-align: center;
 		text-wrap: wrap;
 		font-style: italic;
+		width: 95%;
 	}
 </style>

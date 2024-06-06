@@ -95,7 +95,7 @@
 		</div>
 		<button on:click|preventDefault={submitBet} id="submit">Wette einreichen</button>
 		{#if data.isGroupStageMatch}
-			<p class="groupStageInfo">Das Wetten auf Unentschieden ist nicht möglich.</p>
+			<p class="groupStageInfo">Bei Unentschieden ist jede Wette richtig.</p>
 		{/if}
 	</form>
 </div>
@@ -150,6 +150,7 @@
 		text-align: center;
 		text-wrap: wrap;
 		font-style: italic;
+		width: 95%;
 	}
 
 	.teamSlider {

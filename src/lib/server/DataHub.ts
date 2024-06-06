@@ -1,10 +1,11 @@
-import { getMatchWinner } from '$lib/General';
+import { isMatchWinner } from '$lib/General';
 import { getClientUser } from './Auth';
 import { getAllBets, getAllUsers, type Bet, type User } from './Database';
 import type { Match, Stage } from './OpenLiga';
 import { fetchAvailableGroups, fetchCurrentGroup, fetchMatchData } from './OpenLiga';
 
-const CACHE_TIME = 1000 * 60 * 15; // in ms - 15 minutes
+const CACHE_TIME_DATA = 1000 * 60 * 10; // 10 minutes
+const CACHE_TIME_DATABASE = 1000 * 60 * 60 * 5; // 5 hour
 
 let allUsers: User[] = [];
 let allBets: Bet[] = [];
@@ -17,6 +18,7 @@ let matchesInGroup: { groupName: string; matches: Match[] }[] = [];
 let matchesInKnockout: { stageName: string; matches: Match[] }[] = [];
 
 let lastRefresh = Date.now();
+let lastRefreshDatabase = Date.now();
 let refreshDone = firstLoad();
 
 export const defaultUser: User = {
@@ -32,21 +34,31 @@ export interface Ranking {
 	totalBets: number;
 }
 
-export async function update(force = false) {
-	if (force || Date.now() - lastRefresh > CACHE_TIME) {
+export async function update() {
+	if (Date.now() - lastRefresh > CACHE_TIME_DATA) {
 		// Cache time is over - refresh data
 		lastRefresh = Date.now();
 		refreshDone = refreshData();
 	}
+	if (Date.now() - lastRefreshDatabase > CACHE_TIME_DATABASE) {
+		// Cache time is over - refresh database
+		lastRefreshDatabase = Date.now();
+		refreshDone = refreshDatabase();
+	}
 	await refreshDone;
+}
+
+async function refreshDatabase() {
+	const promises = [];
+	promises.push(getAllUsers().then((data) => (allUsers = data)));
+	promises.push(getAllBets().then((data) => (allBets = data)));
+	await Promise.all(promises);
 }
 
 async function refreshData() {
 	const promises = [];
 	let newMatchData: Match[] = [];
 	promises.push(fetchMatchData(currentStage!.groupOrderID).then((data) => (newMatchData = data)));
-	promises.push(getAllUsers().then((data) => (allUsers = data)));
-	promises.push(getAllBets().then((data) => (allBets = data)));
 	await Promise.all(promises);
 
 	for (const newMatch of newMatchData) {
@@ -208,7 +220,7 @@ function getMatchesInGroups(): { groupName: string; matches: Match[] }[] {
 
 export function getUserRanking() {
 	const ranking: Ranking[] = allUsers.map((user) => {
-		const correctBets = user.bets.filter((bet) => getMatchWinner(getMatch(bet.matchId)) == bet.teamId).length;
+		const correctBets = user.bets.filter((bet) => isMatchWinner(getMatch(bet.matchId), bet.teamId)).length;
 		const totalBets = user.bets.length;
 		return { rank: 0, user: getClientUser(user), correctBets, totalBets };
 	});
