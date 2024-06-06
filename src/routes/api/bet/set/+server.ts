@@ -20,7 +20,7 @@ export const POST = (async ({ request, locals }) => {
 	if (new Date(match.matchDateTime).getTime() < Date.now()) {
 		return getResponse('error', 'Match bereits gestartet.');
 	}
-	if (match.team1.teamName.includes('TBD') || match.team2.teamName.includes('TBD')) {
+	if (match.team1.teamName.includes('noch offen') || match.team2.teamName.includes('noch offen')) {
 		return getResponse('error', 'Teams noch nicht bekannt.');
 	}
 

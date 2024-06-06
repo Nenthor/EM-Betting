@@ -155,7 +155,7 @@
 					<p><i>Keine Wette abgegeben.</i></p>
 				{/if}
 			</div>
-		{:else if data.match.team1.teamName.includes('TBD') || data.match.team2.teamName.includes('TBD')}
+		{:else if data.match.team1.teamName.includes('noch offen') || data.match.team2.teamName.includes('noch offen')}
 			<div class="betInfo">
 				<p>Wetten sind erst möglich, wenn beide Teams feststehen.</p>
 				<a href={backLink}>Zurück</a>

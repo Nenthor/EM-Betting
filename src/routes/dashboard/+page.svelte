@@ -19,11 +19,13 @@
 		for (const match of data.allMatches) {
 			if (select.length >= MAX_SELECTED_MATCHES) break;
 			if (!match.matchDateTime || new Date(match.matchDateTime) < new Date()) continue;
-			if (match.team1.teamName.includes('TBD') || match.team2.teamName.includes('TBD')) continue;
+			if (match.team1.teamName.includes('noch offen') || match.team2.teamName.includes('noch offen')) continue;
 			if (!data.user.bets.some((bet) => bet.matchId === match.matchID)) {
 				select.push(match);
 			}
 		}
+
+		console.log(select);
 
 		return select.sort((a, b) => new Date(a.matchDateTime).getTime() - new Date(b.matchDateTime).getTime());
 	}
