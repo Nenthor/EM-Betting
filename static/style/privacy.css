@@ -1,5 +1,7 @@
-.privacy p, .privacy ul, .privacy li {
+.privacy p, .privacy ul, .privacy li, .privacy a {
   text-align: justify;
+  text-wrap: pretty;
+  word-wrap: break-word;
 }
 
 .privacy h1 {
