@@ -65,5 +65,6 @@
 		border-radius: 5px;
 		text-align: center;
 		background-color: #fff;
+		color: black;
 	}
 </style>

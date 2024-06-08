@@ -1,3 +1,4 @@
+import { STOP_AUTH } from '$env/static/private';
 import { getClientUser } from '$lib/server/Auth';
 import { defaultUser, getAllBetsForMatch, getGroupStageMatches, getMatch } from '$lib/server/DataHub';
 import { error } from '@sveltejs/kit';
@@ -10,5 +11,7 @@ export const load = (({ params, locals }) => {
 	const isGroupStageMatch = getGroupStageMatches().find((group) => group.matches.find((m) => m.matchID == match.matchID)) !== undefined;
 	const matchBets = getAllBetsForMatch(match.matchID).filter((bet) => bet.createdBy !== locals.user.username);
 
-	return { match, isAuthenticated: locals.isAuthenticated, user: getClientUser(locals.user), isGroupStageMatch, matchBets, defaultUser };
+	const allowAuth = STOP_AUTH !== 'true';
+
+	return { match, isAuthenticated: locals.isAuthenticated, user: getClientUser(locals.user), isGroupStageMatch, matchBets, defaultUser, allowAuth };
 }) satisfies PageServerLoad;

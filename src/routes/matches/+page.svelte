@@ -62,7 +62,7 @@
 		<li><a href="/dashboard">Dashboard</a></li>
 	{/if}
 	<li><a href="/ranking?from=matches">Rangliste</a></li>
-	{#if !data.isAuthenticated}
+	{#if !data.isAuthenticated && data.allowAuth}
 		<li><a href="/login">Anmelden</a></li>
 	{/if}
 </Navbar>

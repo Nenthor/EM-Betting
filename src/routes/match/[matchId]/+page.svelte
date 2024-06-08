@@ -134,10 +134,16 @@
 	</div>
 	<div class="bet">
 		{#if !data.isAuthenticated}
-			<div class="betInfo">
-				<p>Du musst angemeldet sein, um eine Wette abzugeben</p>
-				<a href="/login?from={data.match.matchID}">Melde dich jetzt an</a>
-			</div>
+			{#if data.allowAuth}
+				<div class="betInfo">
+					<p>Du musst angemeldet sein, um eine Wette abzugeben</p>
+					<a href="/login?from={data.match.matchID}">Melde dich jetzt an</a>
+				</div>
+			{:else}
+				<div class="betInfo">
+					<p>Anmelden ist nicht mehr möglich - Projekt abgeschlossen.</p>
+				</div>
+			{/if}
 		{:else if data.match.matchIsFinished}
 			<div class="betInfo">
 				<p>Spiel beendet. {getWinnerString()}</p>
