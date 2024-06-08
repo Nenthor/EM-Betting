@@ -35,6 +35,8 @@
 
 	header {
 		height: 75px;
+		position: fixed;
+		top: 0;
 	}
 
 	footer {
@@ -42,6 +44,7 @@
 	}
 
 	main {
+		margin-top: 75px;
 		flex: 1;
 		overflow-y: auto;
 	}
