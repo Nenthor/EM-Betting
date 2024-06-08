@@ -2,6 +2,7 @@
 	import { getBackLink } from '$lib/General';
 	import BetStats from '$lib/components/BetStats.svelte';
 	import ChangeBet from '$lib/components/ChangeBet.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import NewBet from '$lib/components/NewBet.svelte';
@@ -173,6 +174,7 @@
 		{/if}
 	</div>
 </main>
+<Footer />
 
 <style>
 	.standingBox {

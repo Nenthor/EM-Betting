@@ -22,26 +22,28 @@
 		padding: 0;
 		font-family: montserrat;
 		list-style: none;
-	}
-
-	html {
-		min-height: 100%;
-		width: 100%;
+		color: white;
 	}
 
 	body {
-		min-height: 100%;
-		width: 100%;
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
 		background-color: #161616;
-		position: relative;
+		scroll-behavior: smooth;
+	}
+
+	header {
+		height: 75px;
+	}
+
+	footer {
+		height: 20px;
 	}
 
 	main {
-		margin-top: 75px;
-		width: 100%;
-		height: calc(100vh - 75px);
+		flex: 1;
 		overflow-y: auto;
-		scroll-behavior: smooth;
 	}
 
 	a {
@@ -54,17 +56,7 @@
 
 	div,
 	button {
-		-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-	}
-
-	p,
-	a,
-	h1,
-	h2,
-	h3,
-	h4,
-	h5 {
-		color: white;
+		-webkit-tap-highlight-color: transparent;
 	}
 
 	::-webkit-scrollbar {

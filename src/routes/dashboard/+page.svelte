@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onAccountDelete, onLogout } from '$lib/General';
+	import Footer from '$lib/components/Footer.svelte';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import NumberAnimation from '$lib/components/NumberAnimation.svelte';
@@ -24,8 +25,6 @@
 				select.push(match);
 			}
 		}
-
-		console.log(select);
 
 		return select.sort((a, b) => new Date(a.matchDateTime).getTime() - new Date(b.matchDateTime).getTime());
 	}
@@ -105,6 +104,7 @@
 		<a class="danger" href="/delete" on:click|preventDefault={onDeleteConfirm}>Account löschen</a>
 	</div>
 </main>
+<Footer />
 
 <style>
 	main {

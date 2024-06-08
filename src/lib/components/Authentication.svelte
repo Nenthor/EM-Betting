@@ -145,6 +145,7 @@
 	form > div > input {
 		width: 50%;
 		text-align: center;
+		color: black;
 	}
 
 	form > button {

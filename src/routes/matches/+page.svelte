@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Footer from '$lib/components/Footer.svelte';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { onMount } from 'svelte';
@@ -124,6 +125,7 @@
 		</div>
 	</div>
 </main>
+<Footer />
 
 <style>
 	main {

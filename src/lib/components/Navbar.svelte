@@ -48,7 +48,7 @@
 	}
 </script>
 
-<nav bind:offsetWidth={total_width}>
+<header bind:offsetWidth={total_width}>
 	<a id="title" href="/" bind:offsetWidth={image_width}>
 		<img src="/images/icon/icon-navbar.webp" alt="icon" />
 	</a>
@@ -74,20 +74,15 @@
 			{/if}
 		</ul>
 	{/if}
-</nav>
+</header>
 
 <style>
-	nav {
+	header {
 		width: 100%;
-		height: 75px;
-		position: fixed;
-		top: 0;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		background-color: white;
-		z-index: 99;
-		overflow: hidden;
 	}
 
 	#title {
@@ -166,7 +161,7 @@
 
 	:global(#nav_list > li > a) {
 		text-decoration: none;
-		color: inherit;
+		color: #161616;
 		font-size: 1.25rem;
 		text-align: center;
 		font-weight: normal;

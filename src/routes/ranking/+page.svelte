@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getBackLink } from '$lib/General';
+	import Footer from '$lib/components/Footer.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import NumberAnimation from '$lib/components/NumberAnimation.svelte';
 	import { onMount } from 'svelte';
@@ -92,6 +93,8 @@
 		</div>
 	</div>
 </main>
+
+<Footer />
 
 <style>
 	h1 {

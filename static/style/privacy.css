@@ -1,0 +1,19 @@
+.privacy p, .privacy ul, .privacy li {
+  text-align: justify;
+}
+
+.privacy h1 {
+  margin-top: 25px;
+}
+
+.privacy h2 {
+  margin-top: 20px;
+}
+
+.privacy h3 {
+  margin-top: 15px;
+}
+
+.privacy h4 {
+  margin-top: 10px;
+}

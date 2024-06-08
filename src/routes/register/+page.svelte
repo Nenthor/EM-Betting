@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Authentication from '$lib/components/Authentication.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { onMount } from 'svelte';
 
@@ -22,6 +23,8 @@
 <main>
 	<Authentication authType="register" />
 </main>
+
+<Footer />
 
 <style>
 	main {
