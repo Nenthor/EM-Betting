@@ -14,12 +14,14 @@ Erstellt mit Sveltekit. Die Daten zu den Spielen und Teams werden von der [OpenL
   node build
   ```
 
-  Füt die Entwicklung kann das Projekt mit folgenden Befehlen gestartet werden:
+  Für die Entwicklung kann das Projekt mit folgenden Befehlen gestartet werden:
 
   ```bash
   npm install
   npm run dev
   ```
+
+  Außerdem kann auch eine Datenschutzerklärung hinzugefügt werden, indem entweder der HTML-Code in .env als `PRIVACY_POLICY_URL` oder das Dokument in `static/privacy_policy.html` geändert wird.
 
 ## Mögliche Erweiterungen
 Das Projekt ist sehr flexibel und allgemein gebaut, sodass es nicht nur für die EM 2024 verwendet werden kann. Es kann für jede Art von Wettbewerb verwendet werden, bei dem es um Fußballspiele geht.
