@@ -22,5 +22,7 @@
 		color: var(--primary-light);
 		font-weight: 500;
 		text-decoration: none;
+		text-align: center;
+		font-size: clamp(0.9rem, 2vw, 1rem);
 	}
 </style>

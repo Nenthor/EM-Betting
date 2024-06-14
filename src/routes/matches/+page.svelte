@@ -147,6 +147,7 @@
 
 	.stages {
 		padding: 5px 10px;
+		min-width: min-content;
 	}
 
 	.groupName {
@@ -157,7 +158,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 25px;
-		margin: 10px 25px 0 25px;
+		margin: 10px clamp(5px, 2vw, 25px) 0 clamp(5px, 2vw, 25px);
 		justify-content: space-around;
 		align-items: center;
 	}

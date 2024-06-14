@@ -35,6 +35,8 @@
 			}
 		} else if (match.matchIsFinished) {
 			const lastResult = match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
+			if (!lastResult) return 'vs';
+
 			result = `${lastResult.pointsTeam1}:${lastResult.pointsTeam2}`;
 
 			const extraTimeResult = match.matchResults.find((result) => result.resultName.includes('Verlängerung'));

@@ -4,7 +4,7 @@ import { getAllBets, getAllUsers, type Bet, type User } from './Database';
 import type { Match, Stage } from './OpenLiga';
 import { fetchAvailableGroups, fetchCurrentGroup, fetchMatchData } from './OpenLiga';
 
-const CACHE_TIME_DATA = 1000 * 60 * 10; // 10 minutes
+const CACHE_TIME_DATA = 1000 * 60 * 5; // 5 minutes
 const CACHE_TIME_DATABASE = 1000 * 60 * 60 * 5; // 5 hour
 
 let allUsers: User[] = [];
@@ -39,6 +39,7 @@ export async function update() {
 		// Cache time is over - refresh data
 		lastRefresh = Date.now();
 		refreshDone = refreshData();
+		console.log('Refresh data');
 	}
 	if (Date.now() - lastRefreshDatabase > CACHE_TIME_DATABASE) {
 		// Cache time is over - refresh database
@@ -58,15 +59,18 @@ async function refreshDatabase() {
 async function refreshData() {
 	const promises = [];
 	let newMatchData: Match[] = [];
+	promises.push(fetchCurrentGroup().then((data) => (currentStage = data)));
 	promises.push(fetchMatchData(currentStage!.groupOrderID).then((data) => (newMatchData = data)));
 	await Promise.all(promises);
 
+	// Update allMatches with new data
 	for (const newMatch of newMatchData) {
 		const oldMatchIndex = allMatchesIndices.get(newMatch.matchID);
 		if (oldMatchIndex) allMatches[oldMatchIndex] = newMatch;
 	}
 
 	if (currentStage!.groupName.includes('Gruppe')) {
+		// Update matches in group stage
 		for (const group of matchesInGroup) {
 			for (const matchIndex in group.matches) {
 				const newMatch = newMatchData.find((match) => match.matchID == group.matches[matchIndex].matchID);
@@ -74,6 +78,7 @@ async function refreshData() {
 			}
 		}
 	} else {
+		// Update matches in knockout stage
 		const stageIndex = matchesInKnockout.findIndex((stage) => stage.stageName == currentStage!.groupName);
 		if (stageIndex == -1) return;
 		for (const matchIndex in matchesInKnockout[stageIndex].matches) {

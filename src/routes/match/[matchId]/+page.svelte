@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getBackLink } from '$lib/General';
+	import { getBackLink, isMatchWinner } from '$lib/General';
 	import BetStats from '$lib/components/BetStats.svelte';
 	import ChangeBet from '$lib/components/ChangeBet.svelte';
 	import Footer from '$lib/components/Footer.svelte';
@@ -23,6 +23,8 @@
 			status = 'Spiel läuft';
 		} else if (data.match.matchIsFinished) {
 			const latestResult = data.match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
+			if (!latestResult) return 'Warte auf Ergebnis';
+
 			if (latestResult.pointsTeam1 > latestResult.pointsTeam2) {
 				status = data.match.team1.teamName + ' hat gewonnen';
 			} else if (latestResult.pointsTeam1 < latestResult.pointsTeam2) {
@@ -105,19 +107,9 @@
 	}
 
 	function hasWonBet() {
-		const winner = getWinner();
 		const bet = getBet();
-		if (!winner || !bet) return false;
-
-		return winner.teamId === bet.teamId;
-	}
-
-	function isWinningBet() {
-		const winner = getCurrentWinner();
-		const bet = getBet();
-		if (!winner || !bet) return false;
-
-		return winner.teamId === bet.teamId;
+		if (!bet) return false;
+		return isMatchWinner(data.match, bet.teamId);
 	}
 </script>
 
@@ -157,7 +149,7 @@
 			<div class="betInfo">
 				<p>Spiel läuft noch. {getCurrentWinnerString()}</p>
 				{#if getBet()}
-					<p>Damit hast du momentan <span class={isWinningBet() ? 'success' : 'failure'}>{isWinningBet() ? 'richtig' : 'falsch'}</span> gewettet!</p>
+					<p>Damit hast du momentan <span class={hasWonBet() ? 'success' : 'failure'}>{hasWonBet() ? 'richtig' : 'falsch'}</span> gewettet!</p>
 				{:else}
 					<p><i>Keine Wette abgegeben.</i></p>
 				{/if}
@@ -214,6 +206,7 @@
 		align-items: center;
 		flex-direction: column;
 		gap: 50px;
+		margin-bottom: 20px;
 	}
 
 	.betInfo {
