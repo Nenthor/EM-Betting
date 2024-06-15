@@ -1,19 +1,12 @@
 <script lang="ts">
-	import { getBackLink } from '$lib/General';
 	import Footer from '$lib/components/Footer.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import NumberAnimation from '$lib/components/NumberAnimation.svelte';
-	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
 	let userRankIndex = data.ranking.findIndex((r) => r.user.username === data.user.username);
-
-	let backLink = '/';
-	onMount(() => {
-		backLink = getBackLink();
-	});
 
 	function getStartIndex() {
 		if (userRankIndex == -1 || data.ranking[userRankIndex - 1].rank <= 10) return userRankIndex;
@@ -31,7 +24,9 @@
 </script>
 
 <Navbar addHomeLink={false}>
-	<li><a href={backLink}>Zurück</a></li>
+	<li>
+		<a href="/back" on:click|preventDefault={() => history.back()}>Zurück</a>
+	</li>
 </Navbar>
 
 <main>

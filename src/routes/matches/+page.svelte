@@ -61,7 +61,7 @@
 	{#if data.isAuthenticated}
 		<li><a href="/dashboard">Dashboard</a></li>
 	{/if}
-	<li><a href="/ranking?from=matches">Rangliste</a></li>
+	<li><a href="/ranking?">Rangliste</a></li>
 	{#if !data.isAuthenticated && data.allowAuth}
 		<li><a href="/login">Anmelden</a></li>
 	{/if}
@@ -90,7 +90,7 @@
 							<ul class="matches">
 								{#each group.matches as match}
 									<li>
-										<a href="/match/{match.matchID}?from=matches">
+										<a href="/match/{match.matchID}">
 											<MatchItem {match} user={data.user} />
 										</a>
 									</li>
@@ -114,7 +114,7 @@
 					<ul class="matches" bind:this={matchesHtml[i + 1]}>
 						{#each stage.matches as match}
 							<li>
-								<a href="/match/{match.matchID}?from=matches">
+								<a href="/match/{match.matchID}">
 									<MatchItem {match} user={data.user} />
 								</a>
 							</li>

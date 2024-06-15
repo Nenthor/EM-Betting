@@ -47,7 +47,7 @@
 
 <Navbar addHomeLink={false}>
 	<li><a href="/matches">Matches</a></li>
-	<li><a href="/ranking?from=dashboard">Rangliste</a></li>
+	<li><a href="/ranking">Rangliste</a></li>
 </Navbar>
 
 <main>
@@ -72,7 +72,7 @@
 			<ul class="matches">
 				{#each nonBetMatches as match}
 					<li>
-						<a href="/match/{match.matchID}?from=dashboard">
+						<a href="/match/{match.matchID}">
 							<MatchItem {match} user={data.user} />
 						</a>
 					</li>
@@ -89,7 +89,7 @@
 			<ul class="matches">
 				{#each historyMatches as match}
 					<li>
-						<a href="/match/{match.matchID}?from=dashboard">
+						<a href="/match/{match.matchID}">
 							<MatchItem {match} user={data.user} showInfo={false} />
 						</a>
 					</li>

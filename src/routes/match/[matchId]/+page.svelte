@@ -1,21 +1,14 @@
 <script lang="ts">
-	import { getBackLink, isMatchWinner } from '$lib/General';
+	import { isMatchWinner } from '$lib/General';
 	import BetStats from '$lib/components/BetStats.svelte';
 	import ChangeBet from '$lib/components/ChangeBet.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import NewBet from '$lib/components/NewBet.svelte';
-	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-
-	let backLink = '/';
-
-	onMount(() => {
-		backLink = getBackLink();
-	});
 
 	function getMatchStatus() {
 		let status = '';
@@ -114,7 +107,9 @@
 </script>
 
 <Navbar addHomeLink={false}>
-	<li><a href={backLink}>Zurück</a></li>
+	<li>
+		<a href="/back" on:click|preventDefault={() => history.back()}>Zurück</a>
+	</li>
 </Navbar>
 
 <main>
@@ -157,7 +152,7 @@
 		{:else if data.match.team1.teamName.includes('noch offen') || data.match.team2.teamName.includes('noch offen')}
 			<div class="betInfo">
 				<p>Wetten sind erst möglich, wenn beide Teams feststehen.</p>
-				<a href={backLink}>Zurück</a>
+				<a href="/back" on:click|preventDefault={() => history.back()}>Zurück</a>
 			</div>
 		{:else if data.user.bets.find((bet) => bet.matchId === data.match.matchID)}
 			<ChangeBet {data} />
