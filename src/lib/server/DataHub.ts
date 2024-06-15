@@ -4,7 +4,7 @@ import { getAllBets, getAllUsers, type Bet, type User } from './Database';
 import type { Match, Stage } from './OpenLiga';
 import { fetchAvailableGroups, fetchCurrentGroup, fetchMatchData } from './OpenLiga';
 
-const CACHE_TIME_DATA = 1000 * 60 * 5; // 5 minutes
+const CACHE_TIME_DATA = 1000 * 5; // 5 minutes
 const CACHE_TIME_DATABASE = 1000 * 60 * 60 * 5; // 5 hour
 
 let allUsers: User[] = [];
@@ -39,7 +39,6 @@ export async function update() {
 		// Cache time is over - refresh data
 		lastRefresh = Date.now();
 		refreshDone = refreshData();
-		console.log('Refresh data');
 	}
 	if (Date.now() - lastRefreshDatabase > CACHE_TIME_DATABASE) {
 		// Cache time is over - refresh database
@@ -66,7 +65,7 @@ async function refreshData() {
 	// Update allMatches with new data
 	for (const newMatch of newMatchData) {
 		const oldMatchIndex = allMatchesIndices.get(newMatch.matchID);
-		if (oldMatchIndex) allMatches[oldMatchIndex] = newMatch;
+		if (oldMatchIndex !== undefined) allMatches[oldMatchIndex] = newMatch;
 	}
 
 	if (currentStage!.groupName.includes('Gruppe')) {
@@ -174,7 +173,7 @@ function getMatchesInKnockout(): { stageName: string; matches: Match[] }[] {
 	for (const match of allMatches) {
 		if (match.group.groupName.includes('Gruppe')) continue;
 		const stageIndex = stageIndices.get(match.group.groupName);
-		if (stageIndex == undefined) continue;
+		if (stageIndex === undefined) continue;
 		matchesInKnockout[stageIndex].matches.push(match);
 	}
 
