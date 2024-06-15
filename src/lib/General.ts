@@ -49,7 +49,7 @@ export function isMatchWinner(match: Match | undefined, teamId: number) {
 		if (latestResult.pointsTeam1 < latestResult.pointsTeam2) return match.team2.teamId == teamId;
 		return true; // draw - both teams are winners
 	}
-	return false; // match is not finished
+	return true; // match is not finished
 }
 
 export function getResponse(type: 'success' | 'error', message: string) {

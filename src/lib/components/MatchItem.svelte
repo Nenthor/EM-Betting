@@ -55,6 +55,8 @@
 	function getMatchStatus(team: Team) {
 		const result = match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
 		let status = '';
+
+		if (isRunning()) status = 'draw';
 		if (result && result.pointsTeam1 != null && result.pointsTeam2 != null) {
 			if (result.pointsTeam1 > result.pointsTeam2) {
 				status = team.teamId === match.team1.teamId ? 'winning' : 'losing';
