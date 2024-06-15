@@ -4,7 +4,7 @@ import { getAllBets, getAllUsers, type Bet, type User } from './Database';
 import type { Match, Stage } from './OpenLiga';
 import { fetchAvailableGroups, fetchCurrentGroup, fetchMatchData } from './OpenLiga';
 
-const CACHE_TIME_DATA = 1000 * 60 * 5; // 5 minutes
+const CACHE_TIME_DATA = 1000 * 60; // 1 minutes
 const CACHE_TIME_DATABASE = 1000 * 60 * 60 * 5; // 5 hour
 
 let allUsers: User[] = [];
