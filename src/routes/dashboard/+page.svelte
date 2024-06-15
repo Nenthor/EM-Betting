@@ -13,6 +13,7 @@
 
 	let nonBetMatches = getNonBetMatches();
 	let historyMatches = getHistoryMatches();
+	let todaysMatches = getTodaysMatches();
 
 	function getNonBetMatches() {
 		const select: Match[] = [];
@@ -36,6 +37,15 @@
 			if (match) betMatches.push(match);
 		}
 		return betMatches.sort((a, b) => new Date(b.matchDateTime).getTime() - new Date(a.matchDateTime).getTime());
+	}
+
+	function getTodaysMatches() {
+		const matches = data.allMatches.filter((match) => {
+			const date = new Date(match.matchDateTime);
+			const today = new Date();
+			return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+		});
+		return matches.sort((a, b) => new Date(a.matchDateTime).getTime() - new Date(b.matchDateTime).getTime()).slice(0, MAX_SELECTED_MATCHES);
 	}
 
 	function onDeleteConfirm() {
@@ -71,6 +81,20 @@
 			<h2>Heute schon gewettet?</h2>
 			<ul class="matches">
 				{#each nonBetMatches as match}
+					<li>
+						<a href="/match/{match.matchID}">
+							<MatchItem {match} user={data.user} />
+						</a>
+					</li>
+				{/each}
+			</ul>
+			<a href="/matches">Mehr anzeigen</a>
+		</div>
+	{:else if todaysMatches.length !== 0}
+		<div class="statBox">
+			<h2>Heutige Spiele</h2>
+			<ul class="matches">
+				{#each todaysMatches as match}
 					<li>
 						<a href="/match/{match.matchID}">
 							<MatchItem {match} user={data.user} />

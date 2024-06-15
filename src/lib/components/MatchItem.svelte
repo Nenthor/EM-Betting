@@ -31,7 +31,7 @@
 				const lastResult = match.matchResults[match.matchResults.length - 1];
 				result = `${lastResult.pointsTeam1}:${lastResult.pointsTeam2}`;
 			} else {
-				result = ':';
+				result = '0:0';
 			}
 		} else if (match.matchIsFinished) {
 			const lastResult = match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
