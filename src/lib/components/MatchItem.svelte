@@ -1,12 +1,17 @@
 <script lang="ts">
 	import type { User } from '$lib/server/Database';
 	import type { Match, Team } from '$lib/server/OpenLiga';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
 
 	export let match: Match;
 	export let user: User;
 	export let showInfo = true;
 
-	function hasBetForTeam(team: Team) {
+	const contextUser = getContext<Writable<User> | undefined>('user');
+	$: user = $contextUser ? $contextUser : user;
+
+	function hasBetForTeam(user: User, team: Team) {
 		const bet = user.bets.find((bet) => bet.matchId === match.matchID);
 		return bet && bet.teamId === team.teamId;
 	}
@@ -39,12 +44,15 @@
 
 			result = `${lastResult.pointsTeam1}:${lastResult.pointsTeam2}`;
 
-			const extraTimeResult = match.matchResults.find((result) => result.resultName.includes('Verlängerung'));
-			const penaltyResult = match.matchResults.find((result) => result.resultName.includes('Elfmeterschießen'));
-			if (penaltyResult && penaltyResult.pointsTeam1 && penaltyResult.pointsTeam2) {
-				result += ' (n.E.)';
-			} else if (extraTimeResult && extraTimeResult.pointsTeam1 && extraTimeResult.pointsTeam2) {
-				result += ' (n.V.)';
+			if (!match.group.groupName.includes('Gruppe')) {
+				// Group matches don't have extra time or penalties
+				const extraTimeResult = match.matchResults.find((result) => result.resultName.includes('Verlängerung'));
+				const penaltyResult = match.matchResults.find((result) => result.resultName.includes('Elfmeterschießen'));
+				if (penaltyResult && penaltyResult.pointsTeam1 && penaltyResult.pointsTeam2) {
+					result += ' (n.E.)';
+				} else if (extraTimeResult && extraTimeResult.pointsTeam1 && extraTimeResult.pointsTeam2) {
+					result += ' (n.V.)';
+				}
 			}
 		} else {
 			result = 'vs';
@@ -91,7 +99,7 @@
 			<div class="team">
 				<img class="matchImage {getMatchStatus(match.team1)}" src={safeUrl(match.team1.teamIconUrl)} alt="Flagge von {match.team1.shortName}" />
 				<p class="matchTeams">
-					{#if hasBetForTeam(match.team1)}
+					{#if hasBetForTeam(user, match.team1)}
 						<img src="/images/svg/star.svg" alt="selected" />
 					{/if}
 					{getTeamName(match.team1)}
@@ -101,7 +109,7 @@
 			<div class="team">
 				<p class="matchTeams">
 					{getTeamName(match.team2)}
-					{#if hasBetForTeam(match.team2)}
+					{#if hasBetForTeam(user, match.team2)}
 						<img src="/images/svg/star.svg" alt="selected" />
 					{/if}
 				</p>

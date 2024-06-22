@@ -219,6 +219,19 @@ function getMatchesInGroups(): { groupName: string; matches: Match[] }[] {
 		}
 	}
 
+	// sort groups by time
+	matchesInGroup.sort((groupA, groupB) => {
+		const groupATime = groupA.matches.reduce((acc, match) => acc + new Date(match.matchDateTime).getTime(), 0);
+		const groupBTime = groupB.matches.reduce((acc, match) => acc + new Date(match.matchDateTime).getTime(), 0);
+
+		return groupATime - groupBTime;
+	});
+
+	for (let i = 0; i < matchesInGroup.length; i++) {
+		const group = matchesInGroup[i];
+		group.groupName = `Gruppe ${String.fromCharCode(65 + i)}`;
+	}
+
 	return matchesInGroup;
 }
 

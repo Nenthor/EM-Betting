@@ -13,5 +13,5 @@ export const load = (({ params, locals }) => {
 
 	const allowAuth = STOP_AUTH !== 'true';
 
-	return { match, isAuthenticated: locals.isAuthenticated, user: getClientUser(locals.user), isGroupStageMatch, matchBets, defaultUser, allowAuth };
+	return { match, isAuthenticated: locals.isAuthenticated, user: getClientUser(locals.user), isGroupStageMatch, matchBets, allowAuth, defaultUser };
 }) satisfies PageServerLoad;

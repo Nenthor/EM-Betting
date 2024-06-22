@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
-	import type { User } from '$lib/server/Database';
+	import type { Bet, User } from '$lib/server/Database';
 	import type { Match, Team } from '$lib/server/OpenLiga';
-	import { onMount } from 'svelte';
+	import { getContext, onMount } from 'svelte';
+	import type { Writable } from 'svelte/store';
 
 	export let data: {
 		match: Match;
@@ -10,6 +10,10 @@
 		user: User;
 		isGroupStageMatch: boolean;
 	};
+
+	const contextUser = getContext<Writable<User> | undefined>('user');
+	$: data.user = contextUser ? $contextUser! : data.user;
+	$: contextUser?.set(data.user);
 
 	let selectedTeam = data.match.team1;
 	let matchSelectHtml: HTMLDivElement;
@@ -75,7 +79,9 @@
 
 		const json = await response.json();
 		if (json.type === 'success') {
-			await invalidateAll();
+			const newBet: Bet = { matchId: data.match.matchID, teamId: selectedTeam.teamId, createdBy: data.user.username, id: '' };
+			data.user.bets.push(newBet);
+			data.user = data.user;
 		}
 
 		fetching = false;

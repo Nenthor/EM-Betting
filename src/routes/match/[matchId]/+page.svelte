@@ -6,13 +6,25 @@
 	import MatchItem from '$lib/components/MatchItem.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import NewBet from '$lib/components/NewBet.svelte';
+	import { onMount, setContext } from 'svelte';
+	import { writable } from 'svelte/store';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
-	function getMatchStatus() {
+	const user = writable(data.user);
+	setContext('user', user);
+
+	let currentDate = Date.now();
+
+	onMount(() => {
+		const interval = setInterval(() => (currentDate = Date.now()), 1000 * 60);
+		return () => clearInterval(interval);
+	});
+
+	function getMatchStatus(currentDate: number) {
 		let status = '';
-		if (Date.now() > new Date(data.match.matchDateTime).getTime() && !data.match.matchIsFinished) {
+		if (currentDate > new Date(data.match.matchDateTime).getTime() && !data.match.matchIsFinished) {
 			status = 'Spiel läuft';
 		} else if (data.match.matchIsFinished) {
 			const latestResult = data.match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
@@ -34,14 +46,14 @@
 				status += ' (n.V.)';
 			}
 		} else {
-			const diff = new Date(data.match.matchDateTime).getTime() - Date.now();
+			const diff = new Date(data.match.matchDateTime).getTime() - currentDate;
 			const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
 
 			status = `Spiel beginnt in`;
 
 			if (diffDays <= 1) {
 				const diffHours = Math.floor(diff / (1000 * 60 * 60));
-				const diffMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+				const diffMinutes = Math.round((diff % (1000 * 60 * 60)) / (1000 * 60));
 				status += ` ${diffHours}h ${diffMinutes}min`;
 			} else {
 				status += ` ${diffDays} Tagen`;
@@ -96,7 +108,7 @@
 	}
 
 	function getBet() {
-		return data.user.bets.find((bet) => bet.matchId === data.match.matchID);
+		return $user.bets.find((bet) => bet.matchId === data.match.matchID);
 	}
 
 	function hasWonBet() {
@@ -115,7 +127,7 @@
 <main>
 	<div class="standingBox">
 		<div class="standing">
-			<h2>{getMatchStatus()}</h2>
+			<h2>{getMatchStatus(currentDate)}</h2>
 			<MatchItem match={data.match} user={data.defaultUser} />
 		</div>
 	</div>
@@ -154,7 +166,7 @@
 				<p>Wetten sind erst möglich, wenn beide Teams feststehen.</p>
 				<a href="/back" on:click|preventDefault={() => history.back()}>Zurück</a>
 			</div>
-		{:else if data.user.bets.find((bet) => bet.matchId === data.match.matchID)}
+		{:else if $user.bets.find((bet) => bet.matchId === data.match.matchID)}
 			<ChangeBet {data} />
 		{:else}
 			<NewBet {data} />

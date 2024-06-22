@@ -1,3 +1,31 @@
+<script lang="ts">
+	import { invalidateAll } from '$app/navigation';
+	import { onMount } from 'svelte';
+
+	let state: 'active' | 'inactive' = 'active';
+
+	// Automatically refresh the page when the user returns to the tab
+	onMount(() => {
+		window.addEventListener('focus', handleFocus);
+		window.addEventListener('blur', handleBlur);
+
+		return () => {
+			window.removeEventListener('focus', handleFocus);
+			window.removeEventListener('blur', handleBlur);
+		};
+	});
+
+	async function handleFocus() {
+		if (state === 'active') return;
+		state = 'active';
+		await invalidateAll();
+	}
+
+	function handleBlur() {
+		state = 'inactive';
+	}
+</script>
+
 <slot />
 
 <style global>
