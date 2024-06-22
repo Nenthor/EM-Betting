@@ -139,10 +139,10 @@
 
 	@keyframes rotate {
 		from {
-			transform: rotate(0);
+			transform: translate(-50%, -50%) scale(1.4) rotate(0turn);
 		}
 		to {
-			transform: rotate(1turn);
+			transform: translate(-50%, -50%) scale(1.4) rotate(1turn);
 		}
 	}
 
@@ -155,19 +155,11 @@
 		position: absolute;
 		aspect-ratio: 1/1;
 		width: 100%;
-		top: -225%;
-		left: 0%;
-		background-repeat: no-repeat;
-		background-size:
-			50% 50%,
-			50% 50%;
-		background-position:
-			0 0,
-			100% 0,
-			100% 100%,
-			0 100%;
-		background-image: radial-gradient(#4f4, #3c3, #292, transparent), linear-gradient(transparent, transparent), linear-gradient(transparent, transparent), linear-gradient(transparent, transparent);
-		animation: rotate 5s linear infinite;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-image: conic-gradient(transparent 270deg, #3c3, #3c3, transparent);
+		animation: rotate 4s linear infinite;
 		z-index: -1;
 		opacity: 1;
 	}
