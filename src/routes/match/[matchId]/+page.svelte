@@ -22,7 +22,7 @@
 		return () => clearInterval(interval);
 	});
 
-	function getMatchStatus(currentDate: number) {
+	function getMatchStatus(data: PageData, currentDate: number) {
 		let status = '';
 		if (currentDate > new Date(data.match.matchDateTime).getTime() && !data.match.matchIsFinished) {
 			status = 'Spiel läuft';
@@ -62,14 +62,14 @@
 		return status;
 	}
 
-	function getWinnerString() {
-		const winner = getWinner();
+	function getWinnerString(data: PageData) {
+		const winner = getWinner(data);
 		if (winner) {
 			return `${winner.teamName} hat gewonnen!`;
 		} else return 'Kein Gewinner';
 	}
 
-	function getWinner() {
+	function getWinner(data: PageData) {
 		if (!data.match.matchIsFinished) return undefined;
 
 		const latestResult = data.match.matchResults.find((result) => result.resultName.includes('Endergebnis'));
@@ -84,7 +84,7 @@
 		}
 	}
 
-	function getCurrentWinner() {
+	function getCurrentWinner(data: PageData) {
 		const latestResult = data.match.matchResults
 			.filter((result) => result !== undefined)
 			.sort((a, b) => a.resultOrderID - b.resultOrderID)
@@ -100,19 +100,19 @@
 		}
 	}
 
-	function getCurrentWinnerString() {
-		const winner = getCurrentWinner();
+	function getCurrentWinnerString(data: PageData) {
+		const winner = getCurrentWinner(data);
 		if (winner) {
 			return `${winner.teamName} führt!`;
 		} else return 'Noch kein Gewinner';
 	}
 
-	function getBet() {
+	function getBet(data: PageData) {
 		return $user.bets.find((bet) => bet.matchId === data.match.matchID);
 	}
 
-	function hasWonBet() {
-		const bet = getBet();
+	function hasWonBet(data: PageData) {
+		const bet = getBet(data);
 		if (!bet) return false;
 		return isMatchWinner(data.match, bet.teamId);
 	}
@@ -127,7 +127,7 @@
 <main>
 	<div class="standingBox">
 		<div class="standing">
-			<h2>{getMatchStatus(currentDate)}</h2>
+			<h2>{getMatchStatus(data, currentDate)}</h2>
 			<MatchItem match={data.match} user={data.defaultUser} />
 		</div>
 	</div>
@@ -145,18 +145,18 @@
 			{/if}
 		{:else if data.match.matchIsFinished}
 			<div class="betInfo">
-				<p>Spiel beendet. {getWinnerString()}</p>
-				{#if getBet()}
-					<p>Damit hast du <span class={hasWonBet() ? 'success' : 'failure'}>{hasWonBet() ? 'richtig' : 'falsch'}</span> gewettet!</p>
+				<p>Spiel beendet. {getWinnerString(data)}</p>
+				{#if getBet(data)}
+					<p>Damit hast du <span class={hasWonBet(data) ? 'success' : 'failure'}>{hasWonBet(data) ? 'richtig' : 'falsch'}</span> gewettet!</p>
 				{:else}
 					<p><i>Keine Wette abgegeben.</i></p>
 				{/if}
 			</div>
 		{:else if new Date(data.match.matchDateTime).getTime() < Date.now()}
 			<div class="betInfo">
-				<p>Spiel läuft noch. {getCurrentWinnerString()}</p>
-				{#if getBet()}
-					<p>Damit hast du momentan <span class={hasWonBet() ? 'success' : 'failure'}>{hasWonBet() ? 'richtig' : 'falsch'}</span> gewettet!</p>
+				<p>Spiel läuft noch. {getCurrentWinnerString(data)}</p>
+				{#if getBet(data)}
+					<p>Damit hast du momentan <span class={hasWonBet(data) ? 'success' : 'failure'}>{hasWonBet(data) ? 'richtig' : 'falsch'}</span> gewettet!</p>
 				{:else}
 					<p><i>Keine Wette abgegeben.</i></p>
 				{/if}

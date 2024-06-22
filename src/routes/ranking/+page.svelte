@@ -8,18 +8,18 @@
 
 	let userRankIndex = data.ranking.findIndex((r) => r.user.username === data.user.username);
 
-	function getStartIndex() {
+	function getStartIndex(data: PageData) {
 		if (userRankIndex == -1 || data.ranking[userRankIndex - 1].rank <= 10) return userRankIndex;
 		else return userRankIndex - 1;
 	}
 
-	function getTotalAmmountOfBets() {
+	function getTotalAmmountOfBets(data: PageData) {
 		return data.ranking.reduce((acc, r) => acc + r.totalBets, 0);
 	}
 
-	function getBetsPerUser() {
+	function getBetsPerUser(data: PageData) {
 		if (data.ranking.length == 0) return 0;
-		return getTotalAmmountOfBets() / data.ranking.length;
+		return getTotalAmmountOfBets(data) / data.ranking.length;
 	}
 </script>
 
@@ -55,7 +55,7 @@
 						{#if userRankIndex != -1 && data.ranking[userRankIndex - 2].rank > 10}
 							<td class="splitter" colspan="4"><img src="/images/svg/dotdotdot.svg" alt="splitt" /></td>
 						{/if}
-						{#each data.ranking.slice(getStartIndex(), userRankIndex + 2) as ranking}
+						{#each data.ranking.slice(getStartIndex(data), userRankIndex + 2) as ranking}
 							<tr class={ranking.user.username == data.user.username ? 'myRank' : ''}>
 								<td><p>#{ranking.rank}</p></td>
 								<td>{ranking.user.username}</td>
@@ -78,11 +78,11 @@
 				</li>
 				<li>
 					<p>Anzahl aller Wetten</p>
-					<p><NumberAnimation value={getTotalAmmountOfBets()} /></p>
+					<p><NumberAnimation value={getTotalAmmountOfBets(data)} /></p>
 				</li>
 				<li>
 					<p>Wetten pro Nutzer</p>
-					<p><NumberAnimation value={getBetsPerUser()} roundPosition={2} /></p>
+					<p><NumberAnimation value={getBetsPerUser(data)} roundPosition={2} /></p>
 				</li>
 			</ul>
 		</div>

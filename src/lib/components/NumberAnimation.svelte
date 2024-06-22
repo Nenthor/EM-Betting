@@ -7,6 +7,12 @@
 	export let roundPosition = 0;
 
 	let currentValue = startValue;
+	let endValue = value;
+
+	$: if (value !== endValue) {
+		endValue = value;
+		currentValue = value;
+	}
 
 	onMount(() => {
 		updateValue();

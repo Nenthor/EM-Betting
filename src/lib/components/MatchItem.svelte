@@ -11,7 +11,7 @@
 	const contextUser = getContext<Writable<User> | undefined>('user');
 	$: user = $contextUser ? $contextUser : user;
 
-	function hasBetForTeam(user: User, team: Team) {
+	function hasBetForTeam(user: User, team: Team, match: Match) {
 		const bet = user.bets.find((bet) => bet.matchId === match.matchID);
 		return bet && bet.teamId === team.teamId;
 	}
@@ -21,7 +21,7 @@
 		return dateObj.toLocaleDateString('de-DE', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 	}
 
-	function getMatchInfo() {
+	function getMatchInfo(match: Match) {
 		let info = '';
 		if (match.matchDateTime) info += `${getDateFormatted(match.matchDateTime)}`;
 		if (match.location && match.location.locationCity) info += ` - ${match.location.locationCity}`;
@@ -29,9 +29,9 @@
 		return info;
 	}
 
-	function getMatchResult() {
+	function getMatchResult(match: Match) {
 		let result = '';
-		if (isRunning()) {
+		if (isRunning(match)) {
 			if (match.matchResults && match.matchResults.length > 0) {
 				const lastResult = match.matchResults[match.matchResults.length - 1];
 				result = `${lastResult.pointsTeam1}:${lastResult.pointsTeam2}`;
@@ -60,11 +60,11 @@
 		return result;
 	}
 
-	function getMatchStatus(team: Team) {
+	function getMatchStatus(match: Match, team: Team) {
 		const result = match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
 		let status = '';
 
-		if (isRunning()) status = 'draw';
+		if (isRunning(match)) status = 'draw';
 		if (result && result.pointsTeam1 != null && result.pointsTeam2 != null) {
 			if (result.pointsTeam1 > result.pointsTeam2) {
 				status = team.teamId === match.team1.teamId ? 'winning' : 'losing';
@@ -77,7 +77,7 @@
 		return status;
 	}
 
-	function isRunning() {
+	function isRunning(match: Match) {
 		return !match.matchIsFinished && new Date(match.matchDateTime).getTime() < Date.now();
 	}
 
@@ -93,33 +93,33 @@
 	}
 </script>
 
-<div class="match {isRunning() ? 'running' : ''}">
+<div class="match {isRunning(match) ? 'running' : ''}">
 	<div>
 		<div class="matchBox">
 			<div class="team">
-				<img class="matchImage {getMatchStatus(match.team1)}" src={safeUrl(match.team1.teamIconUrl)} alt="Flagge von {match.team1.shortName}" />
+				<img class="matchImage {getMatchStatus(match, match.team1)}" src={safeUrl(match.team1.teamIconUrl)} alt="Flagge von {match.team1.shortName}" />
 				<p class="matchTeams">
-					{#if hasBetForTeam(user, match.team1)}
+					{#if hasBetForTeam(user, match.team1, match)}
 						<img src="/images/svg/star.svg" alt="selected" />
 					{/if}
 					{getTeamName(match.team1)}
 				</p>
 			</div>
-			<p class="matchResult">{getMatchResult()}</p>
+			<p class="matchResult">{getMatchResult(match)}</p>
 			<div class="team">
 				<p class="matchTeams">
 					{getTeamName(match.team2)}
-					{#if hasBetForTeam(user, match.team2)}
+					{#if hasBetForTeam(user, match.team2, match)}
 						<img src="/images/svg/star.svg" alt="selected" />
 					{/if}
 				</p>
-				<img class="matchImage {getMatchStatus(match.team2)}" src={safeUrl(match.team2.teamIconUrl)} alt="Flagge von {match.team2.shortName}" />
+				<img class="matchImage {getMatchStatus(match, match.team2)}" src={safeUrl(match.team2.teamIconUrl)} alt="Flagge von {match.team2.shortName}" />
 			</div>
 		</div>
 		{#if showInfo}
 			<div class="matchBox">
 				<p class="matchInfo">
-					{getMatchInfo()}
+					{getMatchInfo(match)}
 				</p>
 			</div>
 		{/if}

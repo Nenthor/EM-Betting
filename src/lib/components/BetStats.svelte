@@ -10,11 +10,11 @@
 		matchBets: Bet[];
 	};
 
-	function getBetTeam(Bet: Bet) {
+	function getBetTeam(Bet: Bet, data: { match: Match }) {
 		return data.match.team1.teamId == Bet.teamId ? data.match.team1.teamName : data.match.team2.teamName;
 	}
 
-	function getBetTeamAmount(team: Team) {
+	function getBetTeamAmount(team: Team, data: { matchBets: Bet[] }) {
 		return data.matchBets.filter((bet) => bet.teamId === team.teamId).length;
 	}
 </script>
@@ -24,10 +24,10 @@
 	{#if data.matchBets.length === 0}
 		<p><i>Es wurden {new Date(data.match.matchDateTime).getTime() > Date.now() ? 'noch' : ''} keine Wetten abgegeben...</i></p>
 	{:else}
-		<p><b>{getBetTeamAmount(data.match.team1)}x</b> für {data.match.team1.teamName} - <b>{getBetTeamAmount(data.match.team2)}x</b> für {data.match.team2.teamName}</p>
+		<p><b>{getBetTeamAmount(data.match.team1, data)}x</b> für {data.match.team1.teamName} - <b>{getBetTeamAmount(data.match.team2, data)}x</b> für {data.match.team2.teamName}</p>
 		<ul>
 			{#each data.matchBets as bet}
-				<li>{bet.createdBy} für {getBetTeam(bet)}</li>
+				<li>{bet.createdBy} für {getBetTeam(bet, data)}</li>
 			{/each}
 		</ul>
 	{/if}

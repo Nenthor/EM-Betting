@@ -7,15 +7,15 @@
 
 	export let data: PageData;
 
-	let openStages: boolean[] = getInitOpenStages();
+	let openStages: boolean[] = getInitOpenStages(data);
 	let matchesHtml: HTMLElement[] = [];
 
 	let readyToAnimate = false;
 
-	function getInitOpenStages() {
+	function getInitOpenStages(data: PageData) {
 		const initOpenStages = [];
 		for (let i = 0; i < data.knockoutStageMatches.length + 1; i++) {
-			initOpenStages[i] = i >= getOpenStatus();
+			initOpenStages[i] = i >= getOpenStatus(data);
 		}
 		return initOpenStages;
 	}
@@ -26,14 +26,14 @@
 		}, 100);
 	});
 
-	function getOpenStatus() {
+	function getOpenStatus(data: PageData) {
 		if (data.isGroupStage) return 0;
 		const orderId = data.currentKnockoutStage?.matches[0].group.groupOrderID || 0;
 		const currentGroupIndex = data.knockoutStageMatches.findIndex((stage) => stage.matches[0].group.groupOrderID === orderId);
 		return currentGroupIndex + 1;
 	}
 
-	function getLeagueName() {
+	function getLeagueName(data: PageData) {
 		if (data.groupStageMatches.length > 0) {
 			return data.groupStageMatches[0].matches[0].leagueName;
 		} else {
@@ -68,7 +68,7 @@
 </Navbar>
 
 <main>
-	<h1 class="title">Alle Spiele der {getLeagueName()}</h1>
+	<h1 class="title">Alle Spiele der {getLeagueName(data)}</h1>
 	<p class="info">
 		Klicke ein Spiel an, um auf dein Favoriten-Team zu wetten. Mit <img src="/images/svg/star.svg" alt="selected" width="20px" />-versehenen Mannschaften sind deine bisherigen Wetten. Einreichungen
 		sind nur bis kurz vor Anpfiff möglich. Viel Erfolg!

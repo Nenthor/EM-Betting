@@ -11,11 +11,15 @@
 
 	const MAX_SELECTED_MATCHES = 5;
 
-	let nonBetMatches = getNonBetMatches();
-	let historyMatches = getHistoryMatches();
-	let todaysMatches = getTodaysMatches();
+	let nonBetMatches: Match[] = [];
+	let historyMatches: Match[] = [];
+	let todaysMatches: Match[] = [];
 
-	function getNonBetMatches() {
+	$: nonBetMatches = getNonBetMatches(data);
+	$: historyMatches = getHistoryMatches(data);
+	$: todaysMatches = getTodaysMatches(data);
+
+	function getNonBetMatches(data: PageData) {
 		const select: Match[] = [];
 
 		for (const match of data.allMatches) {
@@ -30,7 +34,7 @@
 		return select.sort((a, b) => new Date(a.matchDateTime).getTime() - new Date(b.matchDateTime).getTime());
 	}
 
-	function getHistoryMatches() {
+	function getHistoryMatches(data: PageData) {
 		const betMatches: Match[] = [];
 		for (const bet of data.user.bets) {
 			const match = data.allMatches.find((m) => m.matchID === bet.matchId);
@@ -39,7 +43,7 @@
 		return betMatches.sort((a, b) => new Date(b.matchDateTime).getTime() - new Date(a.matchDateTime).getTime());
 	}
 
-	function getTodaysMatches() {
+	function getTodaysMatches(data: PageData) {
 		const matches = data.allMatches.filter((match) => {
 			const date = new Date(match.matchDateTime);
 			const today = new Date();
