@@ -94,7 +94,8 @@
 			</ul>
 			<a href="/matches">Mehr anzeigen</a>
 		</div>
-	{:else if todaysMatches.length !== 0}
+	{/if}
+	{#if todaysMatches.length !== 0}
 		<div class="statBox">
 			<h2>Heutige Spiele</h2>
 			<ul class="matches">
