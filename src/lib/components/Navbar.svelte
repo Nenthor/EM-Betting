@@ -4,7 +4,6 @@
 
 	export let addHomeLink = true;
 
-	const MARGIN = 50;
 	const MOBILE_FLY_TRANSITION = 1000;
 	let isOpen = false;
 	let is_loading = true;
@@ -17,9 +16,12 @@
 	onMount(() => {
 		setRedirect();
 		window.addEventListener('resize', checkNavbarWidth);
-		window.addEventListener('beforeinstallprompt', (e) => {
-			e.preventDefault();
-		});
+		window.addEventListener('beforeinstallprompt', disableInstallPrompt);
+
+		return () => {
+			window.removeEventListener('resize', checkNavbarWidth);
+			window.removeEventListener('beforeinstallprompt', disableInstallPrompt);
+		};
 	});
 
 	$: if (total_width != 0 && image_width != 0 && list_width != 0) {
@@ -32,7 +34,7 @@
 	}
 
 	function checkNavbarWidth() {
-		if (image_width + list_width + MARGIN >= total_width) isMobileMenu = true;
+		if (image_width + list_width >= total_width) isMobileMenu = true;
 		else {
 			if (isOpen) {
 				onClick();
@@ -41,6 +43,10 @@
 				}, MOBILE_FLY_TRANSITION);
 			} else isMobileMenu = false;
 		}
+	}
+
+	function disableInstallPrompt(e: Event) {
+		e.preventDefault();
 	}
 
 	function setRedirect() {
@@ -87,7 +93,7 @@
 	}
 
 	#title {
-		margin: 2px 10px;
+		padding: 2px 10px;
 		height: calc(100% - 4px);
 	}
 
@@ -99,6 +105,7 @@
 	#nav_list {
 		list-style: none;
 		color: #161616;
+		padding-left: 5px;
 	}
 
 	.loading {

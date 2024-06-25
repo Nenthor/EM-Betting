@@ -61,7 +61,7 @@
 	{#if data.isAuthenticated}
 		<li><a href="/dashboard">Dashboard</a></li>
 	{/if}
-	<li><a href="/ranking?">Rangliste</a></li>
+	<li><a href="/ranking">Rangliste</a></li>
 	{#if !data.isAuthenticated && data.allowAuth}
 		<li><a href="/login">Anmelden</a></li>
 	{/if}
