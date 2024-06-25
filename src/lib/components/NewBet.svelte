@@ -20,6 +20,8 @@
 	let fetching = false;
 	let lastSize = 0;
 
+	$: console.log(selectedTeam.teamName);
+
 	onMount(() => {
 		lastSize = window.innerWidth;
 		window.addEventListener('resize', fixResizeSelection);
@@ -94,8 +96,8 @@
 		<div class="team">
 			<p>Auf welches Team setzten:</p>
 			<div class="teamSlider">
-				<button on:click={() => onTeamSelect(data.match.team1)} style="color: {selectedTeam == data.match.team1 ? 'white' : 'black'}">{data.match.team1.teamName}</button>
-				<button on:click={() => onTeamSelect(data.match.team2)} style="color: {selectedTeam == data.match.team2 ? 'white' : 'black'}">{data.match.team2.teamName}</button>
+				<button on:click={() => onTeamSelect(data.match.team1)} style="color: {selectedTeam.teamId === data.match.team1.teamId ? 'white' : 'black'}">{data.match.team1.teamName}</button>
+				<button on:click={() => onTeamSelect(data.match.team2)} style="color: {selectedTeam.teamId === data.match.team2.teamId ? 'white' : 'black'}">{data.match.team2.teamName}</button>
 				<div bind:this={matchSelectHtml} id="teamSelect"></div>
 			</div>
 		</div>
