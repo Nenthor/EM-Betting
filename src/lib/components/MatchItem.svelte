@@ -23,7 +23,7 @@
 
 	function getMatchInfo(match: Match) {
 		let info = '';
-		if (match.matchDateTime) info += `${getDateFormatted(match.matchDateTime)}`;
+		if (match.matchDateTimeUTC) info += `${getDateFormatted(match.matchDateTimeUTC)}`;
 		if (match.location && match.location.locationCity) info += ` - ${match.location.locationCity}`;
 		if (match.location && match.location.locationStadium) info += ` - ${match.location.locationStadium}`;
 		return info;
@@ -78,7 +78,7 @@
 	}
 
 	function isRunning(match: Match) {
-		return !match.matchIsFinished && new Date(match.matchDateTime).getTime() < Date.now();
+		return !match.matchIsFinished && new Date(match.matchDateTimeUTC).getTime() < Date.now();
 	}
 
 	function getTeamName(team: Team) {

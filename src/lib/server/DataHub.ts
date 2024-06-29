@@ -221,8 +221,8 @@ function getMatchesInGroups(): { groupName: string; matches: Match[] }[] {
 
 	// sort groups by time
 	matchesInGroup.sort((groupA, groupB) => {
-		const groupATime = groupA.matches.reduce((acc, match) => acc + new Date(match.matchDateTime).getTime(), 0);
-		const groupBTime = groupB.matches.reduce((acc, match) => acc + new Date(match.matchDateTime).getTime(), 0);
+		const groupATime = groupA.matches.reduce((acc, match) => acc + new Date(match.matchDateTimeUTC).getTime(), 0);
+		const groupBTime = groupB.matches.reduce((acc, match) => acc + new Date(match.matchDateTimeUTC).getTime(), 0);
 
 		return groupATime - groupBTime;
 	});

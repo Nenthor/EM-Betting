@@ -16,7 +16,7 @@ export const POST = (async ({ request, locals }) => {
 	if (!match) {
 		return getResponse('error', 'Match nicht gefunden.');
 	}
-	if (new Date(match.matchDateTime).getTime() < Date.now()) {
+	if (new Date(match.matchDateTimeUTC).getTime() < Date.now()) {
 		return getResponse('error', 'Match bereits gestartet.');
 	}
 

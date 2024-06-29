@@ -22,7 +22,7 @@
 <div class="box">
 	<h2>Wetten von anderen</h2>
 	{#if data.matchBets.length === 0}
-		<p><i>Es wurden {new Date(data.match.matchDateTime).getTime() > Date.now() ? 'noch' : ''} keine Wetten abgegeben...</i></p>
+		<p><i>Es wurden {new Date(data.match.matchDateTimeUTC).getTime() > Date.now() ? 'noch' : ''} keine Wetten abgegeben...</i></p>
 	{:else}
 		<p><b>{getBetTeamAmount(data.match.team1, data)}x</b> für {data.match.team1.teamName} - <b>{getBetTeamAmount(data.match.team2, data)}x</b> für {data.match.team2.teamName}</p>
 		<ul>

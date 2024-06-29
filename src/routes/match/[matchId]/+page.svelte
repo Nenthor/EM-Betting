@@ -24,7 +24,7 @@
 
 	function getMatchStatus(data: PageData, currentDate: number) {
 		let status = '';
-		if (currentDate > new Date(data.match.matchDateTime).getTime() && !data.match.matchIsFinished) {
+		if (currentDate > new Date(data.match.matchDateTimeUTC).getTime() && !data.match.matchIsFinished) {
 			status = 'Spiel läuft';
 		} else if (data.match.matchIsFinished) {
 			const latestResult = data.match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
@@ -46,7 +46,7 @@
 				status += ' (n.V.)';
 			}
 		} else {
-			const diff = new Date(data.match.matchDateTime).getTime() - currentDate;
+			const diff = new Date(data.match.matchDateTimeUTC).getTime() - currentDate;
 			const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
 
 			status = `Spiel beginnt in`;
@@ -152,7 +152,7 @@
 					<p><i>Keine Wette abgegeben.</i></p>
 				{/if}
 			</div>
-		{:else if new Date(data.match.matchDateTime).getTime() < Date.now()}
+		{:else if new Date(data.match.matchDateTimeUTC).getTime() < Date.now()}
 			<div class="betInfo">
 				<p>Spiel läuft noch. {getCurrentWinnerString(data)}</p>
 				{#if getBet(data)}

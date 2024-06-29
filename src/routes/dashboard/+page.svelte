@@ -24,14 +24,14 @@
 
 		for (const match of data.allMatches) {
 			if (select.length >= MAX_SELECTED_MATCHES) break;
-			if (!match.matchDateTime || new Date(match.matchDateTime) < new Date()) continue;
+			if (!match.matchDateTimeUTC || new Date(match.matchDateTimeUTC) < new Date()) continue;
 			if (match.team1.teamName.includes('noch offen') || match.team2.teamName.includes('noch offen')) continue;
 			if (!data.user.bets.some((bet) => bet.matchId === match.matchID)) {
 				select.push(match);
 			}
 		}
 
-		return select.sort((a, b) => new Date(a.matchDateTime).getTime() - new Date(b.matchDateTime).getTime());
+		return select.sort((a, b) => new Date(a.matchDateTimeUTC).getTime() - new Date(b.matchDateTimeUTC).getTime());
 	}
 
 	function getHistoryMatches(data: PageData) {
@@ -40,16 +40,16 @@
 			const match = data.allMatches.find((m) => m.matchID === bet.matchId);
 			if (match) betMatches.push(match);
 		}
-		return betMatches.sort((a, b) => new Date(b.matchDateTime).getTime() - new Date(a.matchDateTime).getTime());
+		return betMatches.sort((a, b) => new Date(b.matchDateTimeUTC).getTime() - new Date(a.matchDateTimeUTC).getTime());
 	}
 
 	function getTodaysMatches(data: PageData) {
 		const matches = data.allMatches.filter((match) => {
-			const date = new Date(match.matchDateTime);
+			const date = new Date(match.matchDateTimeUTC);
 			const today = new Date();
 			return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
 		});
-		return matches.sort((a, b) => new Date(a.matchDateTime).getTime() - new Date(b.matchDateTime).getTime()).slice(0, MAX_SELECTED_MATCHES);
+		return matches.sort((a, b) => new Date(a.matchDateTimeUTC).getTime() - new Date(b.matchDateTimeUTC).getTime()).slice(0, MAX_SELECTED_MATCHES);
 	}
 
 	function onDeleteConfirm() {
