@@ -33,7 +33,7 @@
 		let result = '';
 		if (isRunning(match)) {
 			if (match.matchResults && match.matchResults.length > 0) {
-				const lastResult = match.matchResults[match.matchResults.length - 1];
+				const lastResult = match.matchResults.sort((a, b) => b.resultOrderID - a.resultOrderID)[0];
 				result = `${lastResult.pointsTeam1}:${lastResult.pointsTeam2}`;
 			} else {
 				result = '0:0';
