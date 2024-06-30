@@ -38,8 +38,8 @@
 			} else {
 				result = '0:0';
 			}
-		} else if (match.matchIsFinished) {
-			const lastResult = match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
+		} else if (match.matchIsFinished && match.matchResults && match.matchResults.length > 0) {
+			const lastResult = match.matchResults.sort((a, b) => b.resultOrderID - a.resultOrderID)[0];
 			if (!lastResult) return 'vs';
 
 			result = `${lastResult.pointsTeam1}:${lastResult.pointsTeam2}`;
@@ -61,7 +61,7 @@
 	}
 
 	function getMatchStatus(match: Match, team: Team) {
-		const result = match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
+		const result = match.matchResults.sort((a, b) => b.resultOrderID - a.resultOrderID)[0];
 		let status = '';
 
 		if (isRunning(match)) status = 'draw';
