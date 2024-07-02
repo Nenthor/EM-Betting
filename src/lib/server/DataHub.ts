@@ -138,6 +138,7 @@ export async function updateCacheUser(user: User, remove = false) {
 		if (userIndex != -1) allUsers[userIndex] = user;
 		else allUsers.push(user);
 	}
+	ranking = calculateUserRanking();
 }
 
 export async function updateCacheBet(bet: Bet, remove = false) {
