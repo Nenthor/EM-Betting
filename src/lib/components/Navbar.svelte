@@ -16,12 +16,6 @@
 	onMount(() => {
 		setRedirect();
 		window.addEventListener('resize', checkNavbarWidth);
-		window.addEventListener('beforeinstallprompt', disableInstallPrompt);
-
-		return () => {
-			window.removeEventListener('resize', checkNavbarWidth);
-			window.removeEventListener('beforeinstallprompt', disableInstallPrompt);
-		};
 	});
 
 	$: if (total_width != 0 && image_width != 0 && list_width != 0) {
@@ -43,10 +37,6 @@
 				}, MOBILE_FLY_TRANSITION);
 			} else isMobileMenu = false;
 		}
-	}
-
-	function disableInstallPrompt(e: Event) {
-		e.preventDefault();
 	}
 
 	function setRedirect() {
