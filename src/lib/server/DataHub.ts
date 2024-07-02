@@ -16,6 +16,7 @@ let allMatches: Match[] = [];
 let allMatchesIndices = new Map<number, number>(); // k: matchId; v: index in allMatches
 let matchesInGroup: { groupName: string; matches: Match[] }[] = [];
 let matchesInKnockout: { stageName: string; matches: Match[] }[] = [];
+let ranking: Ranking[] = [];
 
 let lastRefresh = Date.now();
 let lastRefreshDatabase = Date.now();
@@ -53,6 +54,7 @@ async function refreshDatabase() {
 	promises.push(getAllUsers().then((data) => (allUsers = data)));
 	promises.push(getAllBets().then((data) => (allBets = data)));
 	await Promise.all(promises);
+	ranking = calculateUserRanking();
 }
 
 async function refreshData() {
@@ -85,6 +87,9 @@ async function refreshData() {
 			if (newMatch) matchesInKnockout[stageIndex].matches[matchIndex] = newMatch;
 		}
 	}
+
+	// Update ranking
+	ranking = calculateUserRanking();
 }
 
 export function getAvailableStages() {
@@ -117,6 +122,10 @@ export function getAllBetsForMatch(matchId: number) {
 
 export function getUserFromCache(username: string) {
 	return allUsers.find((user) => user.username == username);
+}
+
+export function getUserRanking() {
+	return ranking;
 }
 
 export async function updateCacheUser(user: User, remove = false) {
@@ -156,6 +165,7 @@ async function firstLoad() {
 
 	matchesInGroup = getMatchesInGroups();
 	matchesInKnockout = getMatchesInKnockout();
+	ranking = calculateUserRanking();
 
 	lastRefresh = Date.now();
 }
@@ -235,7 +245,7 @@ function getMatchesInGroups(): { groupName: string; matches: Match[] }[] {
 	return matchesInGroup;
 }
 
-export function getUserRanking() {
+function calculateUserRanking() {
 	const ranking: Ranking[] = allUsers.map((user) => {
 		const correctBets = user.bets.filter((bet) => isMatchWinner(getMatch(bet.matchId), bet.teamId)).length;
 		const totalBets = user.bets.length;

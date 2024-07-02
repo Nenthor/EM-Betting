@@ -1,9 +1,8 @@
-import { dev } from '$app/environment';
 import type { OrderByDirection, WhereFilterOp } from 'firebase/firestore/lite';
 import { add, create, get, getAll, getQuery, remove, set } from './Firebase';
 
-const collectionUser = dev ? 'dev-users' : 'users';
-const collectionBet = dev ? 'dev-bets' : 'bets';
+const collectionUser = 'users';
+const collectionBet = 'bets';
 
 export interface User {
 	username: string;
