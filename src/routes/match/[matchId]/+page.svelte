@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isMatchWinner } from '$lib/General';
+	import { getLastMatchResult, isMatchWinner } from '$lib/General';
 	import BetStats from '$lib/components/BetStats.svelte';
 	import ChangeBet from '$lib/components/ChangeBet.svelte';
 	import Footer from '$lib/components/Footer.svelte';
@@ -27,7 +27,7 @@
 		if (currentDate > new Date(data.match.matchDateTimeUTC).getTime() && !data.match.matchIsFinished) {
 			status = 'Spiel läuft';
 		} else if (data.match.matchIsFinished) {
-			const latestResult = data.match.matchResults.find((result) => result.resultName.includes('Endergebnis'))!;
+			const latestResult = getLastMatchResult(data.match);
 			if (!latestResult) return 'Warte auf Ergebnis';
 
 			if (latestResult.pointsTeam1 > latestResult.pointsTeam2) {
@@ -40,9 +40,9 @@
 
 			const extraTimeResult = data.match.matchResults.find((result) => result.resultName.includes('Verlängerung'));
 			const penaltyResult = data.match.matchResults.find((result) => result.resultName.includes('Elfmeterschießen'));
-			if (penaltyResult && penaltyResult.pointsTeam1 && penaltyResult.pointsTeam2) {
+			if (penaltyResult && penaltyResult.pointsTeam1 !== undefined && penaltyResult.pointsTeam2 !== undefined) {
 				status += ' (n.E.)';
-			} else if (extraTimeResult && extraTimeResult.pointsTeam1 && extraTimeResult.pointsTeam2) {
+			} else if (extraTimeResult && extraTimeResult.pointsTeam1 !== undefined && extraTimeResult.pointsTeam2 !== undefined) {
 				status += ' (n.V.)';
 			}
 		} else {
@@ -70,25 +70,7 @@
 	}
 
 	function getWinner(data: PageData) {
-		if (!data.match.matchIsFinished) return undefined;
-
-		const latestResult = data.match.matchResults.find((result) => result.resultName.includes('Endergebnis'));
-		if (!latestResult) return undefined;
-
-		if (latestResult.pointsTeam1 > latestResult.pointsTeam2) {
-			return data.match.team1;
-		} else if (latestResult.pointsTeam1 < latestResult.pointsTeam2) {
-			return data.match.team2;
-		} else {
-			return undefined;
-		}
-	}
-
-	function getCurrentWinner(data: PageData) {
-		const latestResult = data.match.matchResults
-			.filter((result) => result !== undefined)
-			.sort((a, b) => a.resultOrderID - b.resultOrderID)
-			.pop();
+		const latestResult = getLastMatchResult(data.match);
 		if (!latestResult) return undefined;
 
 		if (latestResult.pointsTeam1 > latestResult.pointsTeam2) {
@@ -101,7 +83,7 @@
 	}
 
 	function getCurrentWinnerString(data: PageData) {
-		const winner = getCurrentWinner(data);
+		const winner = getWinner(data);
 		if (winner) {
 			return `${winner.teamName} führt!`;
 		} else return 'Noch kein Gewinner';

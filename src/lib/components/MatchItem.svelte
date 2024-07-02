@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getLastMatchResult } from '$lib/General';
 	import type { User } from '$lib/server/Database';
 	import type { Match, Team } from '$lib/server/OpenLiga';
 	import { getContext } from 'svelte';
@@ -31,15 +32,14 @@
 
 	function getMatchResult(match: Match) {
 		let result = '';
+		const lastResult = getLastMatchResult(match);
 		if (isRunning(match)) {
-			if (match.matchResults && match.matchResults.length > 0) {
-				const lastResult = match.matchResults.sort((a, b) => b.resultOrderID - a.resultOrderID)[0];
+			if (lastResult && match.matchResults && match.matchResults.length > 0) {
 				result = `${lastResult.pointsTeam1}:${lastResult.pointsTeam2}`;
 			} else {
 				result = '0:0';
 			}
 		} else if (match.matchIsFinished && match.matchResults && match.matchResults.length > 0) {
-			const lastResult = match.matchResults.sort((a, b) => b.resultOrderID - a.resultOrderID)[0];
 			if (!lastResult) return 'vs';
 
 			result = `${lastResult.pointsTeam1}:${lastResult.pointsTeam2}`;
@@ -48,9 +48,9 @@
 				// Group matches don't have extra time or penalties
 				const extraTimeResult = match.matchResults.find((result) => result.resultName.includes('Verlängerung'));
 				const penaltyResult = match.matchResults.find((result) => result.resultName.includes('Elfmeterschießen'));
-				if (penaltyResult && penaltyResult.pointsTeam1 && penaltyResult.pointsTeam2) {
+				if (penaltyResult && penaltyResult.pointsTeam1 !== undefined && penaltyResult.pointsTeam2 !== undefined) {
 					result += ' (n.E.)';
-				} else if (extraTimeResult && extraTimeResult.pointsTeam1 && extraTimeResult.pointsTeam2) {
+				} else if (extraTimeResult && extraTimeResult.pointsTeam1 !== undefined && extraTimeResult.pointsTeam2 !== undefined) {
 					result += ' (n.V.)';
 				}
 			}
@@ -61,7 +61,7 @@
 	}
 
 	function getMatchStatus(match: Match, team: Team) {
-		const result = match.matchResults.sort((a, b) => b.resultOrderID - a.resultOrderID)[0];
+		const result = getLastMatchResult(match);
 		let status = '';
 
 		if (isRunning(match)) status = 'draw';

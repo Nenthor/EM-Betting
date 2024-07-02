@@ -36,13 +36,19 @@ export function isMatchWinner(match: Match | undefined, teamId: number) {
 	if (new Date(match.matchDateTimeUTC).getTime() > new Date().getTime()) return false;
 	if (match.matchResults.length === 0) return true;
 
-	const endResult = match.matchResults.sort((a, b) => b.resultOrderID - a.resultOrderID)[0];
+	const endResult = getLastMatchResult(match);
 
 	if (endResult && endResult.pointsTeam1 !== undefined && endResult.pointsTeam2 !== undefined) {
 		if (endResult.pointsTeam1 > endResult.pointsTeam2) return match.team1.teamId == teamId;
 		if (endResult.pointsTeam1 < endResult.pointsTeam2) return match.team2.teamId == teamId;
 		return true; // draw - both teams are winners
 	}
+}
+
+export function getLastMatchResult(match: Match | undefined) {
+	if (!match) return;
+	if (match.matchResults.length === 0) return;
+	return match.matchResults.sort((a, b) => b.resultOrderID - a.resultOrderID)[0];
 }
 
 export function getResponse(type: 'success' | 'error', message: string) {
