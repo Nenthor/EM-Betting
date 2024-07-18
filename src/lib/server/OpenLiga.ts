@@ -1,3 +1,5 @@
+import { STOP_AUTH } from '$env/static/private';
+
 const LEAGE_SHORTCUT = 'em';
 const SEASON = 2024;
 
@@ -118,6 +120,15 @@ export async function fetchMatchData(groupOrderID: number | undefined = undefine
 }
 
 export async function fetchCurrentGroup(): Promise<Stage> {
+	if (STOP_AUTH === 'true') {
+		// Make all stages visible after completion of the tournament
+		let allStages = await fetchAvailableGroups();
+
+		if (allStages.length !== 0) {
+			allStages = allStages.sort((a, b) => a.groupOrderID - b.groupOrderID);
+			return allStages[0];
+		}
+	}
 	return await fetchData(`https://api.openligadb.de/getcurrentgroup/${LEAGE_SHORTCUT}`);
 }
 
