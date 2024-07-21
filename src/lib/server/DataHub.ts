@@ -1,3 +1,4 @@
+import { STOP_AUTH } from '$env/static/private';
 import { isMatchWinner } from '$lib/General';
 import { getClientUser } from './Auth';
 import { getAllBets, getAllUsers, type Bet, type User } from './Database';
@@ -41,7 +42,7 @@ export async function update() {
 		lastRefresh = Date.now();
 		refreshDone = refreshData();
 	}
-	if (Date.now() - lastRefreshDatabase > CACHE_TIME_DATABASE) {
+	if (Date.now() - lastRefreshDatabase > CACHE_TIME_DATABASE && STOP_AUTH !== 'true') {
 		// Cache time is over - refresh database
 		lastRefreshDatabase = Date.now();
 		refreshDone = refreshDatabase();
@@ -128,7 +129,7 @@ export function getUserRanking() {
 	return ranking;
 }
 
-export async function updateCacheUser(user: User, remove = false) {
+export function updateCacheUser(user: User, remove = false) {
 	const userIndex = allUsers.findIndex((u) => u.username == user.username);
 	if (remove) {
 		if (userIndex == -1) return;
